@@ -1,7 +1,6 @@
 # BattleriteAimbot
 A simple hackathon like project based around the game http://store.steampowered.com/app/504370/Battlerite/
 
-Here is a demo :
 [![Alt text](https://img.youtube.com/vi/zgnAourFS5A/0.jpg)](https://www.youtube.com/watch?v=zgnAourFS5A)
 
 https://www.youtube.com/watch?v=zgnAourFS5A
