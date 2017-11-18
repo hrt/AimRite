@@ -1,0 +1,18 @@
+#pragma once
+
+#ifndef _MOUSE_MANAGER_H
+#define _MOUSE_MANAGER_H
+
+#include "WindowManager.hpp"
+#include "Vector2.hpp"
+
+class MouseManager
+{
+private:
+	int threshHold;
+public:
+	MouseManager(int pointThreshold);
+	void executeMovementTo(WindowManager& wm, Vector2& to);
+};
+
+#endif
