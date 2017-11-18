@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 
 
 		// fix getting teams
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			float targetX = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_X + i * PLAYER_SIZE);
 			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_TEAM + i * PLAYER_SIZE);
@@ -91,14 +91,13 @@ int main(int argc, char** argv) {
 				playerInformation[i].idle = 0;
 			}
 
-			std::cout << targetTeam << std::endl;
+			//std::cout << targetTeam << std::endl;
 
-			if (distanceToTarget > 200.f)
+			if (distanceToTarget > 1000.f)
 			{
 				continue;
 			}
 
-			std::cout << targetTeam << std::endl;
 
 			if (distanceToTarget < 1.f)
 			{
