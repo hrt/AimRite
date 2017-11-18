@@ -6,8 +6,13 @@ A simple hackathon like project based around the game http://store.steampowered.
 https://www.youtube.com/watch?v=qklJei0Me3s
 
 # Build (Windows)
-Change SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_WIDTH and WINDOW_HEIGHT definitions to your screen dimensions
+Change ```SCREEN_WIDTH```, ```SCREEN_HEIGHT```, ```WINDOW_WIDTH``` and ```WINDOW_HEIGHT``` definitions to your screen dimensions.
+
 To build simple clone and open the solution in Visual Studio 2015 and build under Debug x86
+
+It's recommended that you play on locked screen.
+
+Note : if Battlerite has updated since the last commit then it's quite likely that you will have to update ```Offsets.hpp```.
 
 # Use
 Simply have Battlerite.exe open and then run this program
