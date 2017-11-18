@@ -24,21 +24,8 @@ BOOL CALLBACK WindowManager::SearchProc(HWND hWnd, LPARAM lParam)
 	static TCHAR buffer[50];
 
 	GetWindowText(hWnd, buffer, 50);
-	std::string BATTLERITE = "Battlerite";
-	bool isCorrect = true;;
 
-	for (int i = 0; i < 9; i++)
-	{
-		if (!buffer[i])
-		{
-			isCorrect = false;
-			break;
-		}
-		if (buffer[i] != BATTLERITE[i])
-			isCorrect = false;
-	}
-
-	if (isCorrect)
+	if (!strcmp("Battlerite", buffer))
 	{
 		WindowManager::window = hWnd;
 		return FALSE;
