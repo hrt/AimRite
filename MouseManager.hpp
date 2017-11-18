@@ -11,7 +11,7 @@ class MouseManager
 private:
 	int threshHold;
 public:
-	MouseManager(int pointThreshold);
+	MouseManager();
 	void executeMovementTo(WindowManager& wm, Vector2& to);
 };
 

@@ -36,9 +36,8 @@ void mouseMoveAbs(int x, int y)
 }
 
 
-MouseManager::MouseManager(int pointThreshold)
+MouseManager::MouseManager()
 {
-	MouseManager::threshHold = pointThreshold;
 	mouseSetup();
 }
 
