@@ -1,6 +1,7 @@
 #pragma once
 #ifndef _OFFSETS_H
 #define _OFFSETS_H
+#include <ctime>
 
 const static DWORD OFFSET_LOCAL_PLAYER[] = { 0xF9AE70, 0x38, 0x2F8, 0x598, 0x1C };
 const static DWORD OFFSET_LOCAL_X = 0x30;
@@ -21,7 +22,7 @@ struct PlayerInformation
 	float previousY;
 	float speedX;
 	float speedY;
-	int idle;
+	clock_t lastUpdate;
 };
 
 #endif

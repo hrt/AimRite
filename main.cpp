@@ -8,7 +8,6 @@
 #include "Offsets.hpp"
 #include <windows.h>
 #include <tlhelp32.h>
-#include <ctime>
 
 template<class c>
 c Read(HANDLE processHandle, DWORD dwAddress)
@@ -59,7 +58,7 @@ int main(int argc, char** argv) {
 		// Local players team
 		int playerTeam = -1;
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			float targetX = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_X + i * PLAYER_SIZE);
 			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_TEAM + i * PLAYER_SIZE);
@@ -74,7 +73,7 @@ int main(int argc, char** argv) {
 			playerInformation[i].speedY = targetY - playerInformation[i].y;
 
 			// Filter anomalous results, huge change in coordinates -> ignore
-			if (abs(playerInformation[i].speedX) > 11 || abs(playerInformation[i].speedY) > 11)
+			if (abs(playerInformation[i].speedX) > 6.f || abs(playerInformation[i].speedY) > 6.f)
 			{
 				playerInformation[i].previousX = playerInformation[i].x;
 				playerInformation[i].previousY = playerInformation[i].y;
@@ -83,19 +82,18 @@ int main(int argc, char** argv) {
 				continue;
 			}
 
-			// Ignore dead people or afk people
-			if (abs(playerInformation[i].speedX) < 0.01f
-				&& abs(playerInformation[i].speedY) < 0.01f)
+			// Ignore dead people or afk people (1 second)
+			if (abs(playerInformation[i].speedX) > 0.1f
+				|| abs(playerInformation[i].speedY) > 0.1f)
 			{
-				// Dead or not moving for 1s
-				if (++playerInformation[i].idle > 20)
-					continue;
+				// Update timer
+				playerInformation[i].lastUpdate = clock();
 			}
-			else
-			{
-				// Reset afk timer
-				playerInformation[i].idle = 0;
-			}
+
+			float differenceInTime = (clock() - playerInformation[i].lastUpdate) / CLOCKS_PER_SEC;
+
+			if (differenceInTime > 2)
+				continue;
 
 			// Ignore entities that are really far away
 			if (distanceToTarget > 1000.f)
@@ -211,35 +209,53 @@ int main(int argc, char** argv) {
 			Sleep(50);
 		}
 
+
+		/* Scripts begin */
 		// Jade specific Anti-gap closers, uncomment if you want to use it
-		// if close enemy -> R
-		//if (distanceToTarget > 1.f && distanceToTarget < 20.f)
-		//{
-		//	static clock_t lastPressTime = clock();
+		// if in range to E -> E
 
-		//	float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
-		//	// Try twice a second
-		//	if (differenceInTime > 0.5)
-		//	{
-		//		// Update timer
-		//		lastPressTime = clock();
+		static clock_t lastPressTime = clock();
+		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
 
-		//		INPUT keyEvent;
-		//		keyEvent.type = INPUT_KEYBOARD;
-		//		keyEvent.ki.wScan = 0;
-		//		keyEvent.ki.time = 0;
-		//		keyEvent.ki.dwExtraInfo = 0;
+		if (distanceToTarget > 1.f && differenceInTime > 0.5)
+		{
+			INPUT keyEvent;
+			keyEvent.type = INPUT_KEYBOARD;
+			keyEvent.ki.wScan = 0;
+			keyEvent.ki.time = 0;
+			keyEvent.ki.dwExtraInfo = 0;
 
-		//		// Press the "R" key
-		//		keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
-		//		keyEvent.ki.dwFlags = 0; // 0 for key press
-		//		SendInput(1, &keyEvent, sizeof(INPUT));
+			//if (distanceToTarget < 20.f)
+			//{
+			//	// if close enemy -> R
+			//	lastPressTime = clock();
 
-		//		// Release the "R" key
-		//		keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-		//		SendInput(1, &keyEvent, sizeof(INPUT));
-		//	}
-		//}
+			//	// Press the "R" key
+			//	keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
+			//	keyEvent.ki.dwFlags = 0; // 0 for key press
+			//	SendInput(1, &keyEvent, sizeof(INPUT));
+
+			//	// Release the "R" key
+			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+			//	SendInput(1, &keyEvent, sizeof(INPUT));
+			//}
+			//else if (distanceToTarget < 100.f)
+			//{
+			//	// if in range cast E
+			//	lastPressTime = clock();
+
+			//	// Press the "E" key
+			//	keyEvent.ki.wVk = 0x45; // virtual-key code for the "e" key
+			//	keyEvent.ki.dwFlags = 0; // 0 for key press
+			//	SendInput(1, &keyEvent, sizeof(INPUT));
+
+			//	// Release the "E" key
+			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+			//	SendInput(1, &keyEvent, sizeof(INPUT));
+			//}
+
+		}
+
 	}
 
 	return EXIT_SUCCESS;
