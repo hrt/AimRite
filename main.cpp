@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 		int playerTeam = -1;
 
 		// Loop through entities
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 7; i++)
 		{
 			float targetX = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_X + i * PLAYER_SIZE);
 			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_TEAM + i * PLAYER_SIZE);
@@ -74,7 +74,9 @@ int main(int argc, char** argv) {
 			playerInformation[i].speedY = targetY - playerInformation[i].y;
 
 			// Filter anomalous results, huge change in coordinates -> ignore
-			if (abs(playerInformation[i].speedX) > 6.f || abs(playerInformation[i].speedY) > 6.f)
+			if ((int)targetX == 0 && (int)targetY == 0)
+				continue;
+			if (abs(playerInformation[i].speedX) > 5.f || abs(playerInformation[i].speedY) > 5.f)
 			{
 				playerInformation[i].previousX = playerInformation[i].x;
 				playerInformation[i].previousY = playerInformation[i].y;
@@ -84,8 +86,8 @@ int main(int argc, char** argv) {
 			}
 
 			// Ignore dead people or afk people (2 seconds)
-			if (abs(playerInformation[i].speedX) > 0.1f
-				|| abs(playerInformation[i].speedY) > 0.1f)
+			if (abs(playerInformation[i].speedX) > 0.15f
+				|| abs(playerInformation[i].speedY) > 0.15f)
 			{
 				// Update timer
 				playerInformation[i].lastUpdate = clock();
@@ -93,7 +95,7 @@ int main(int argc, char** argv) {
 
 			float differenceInTime = (clock() - playerInformation[i].lastUpdate) / CLOCKS_PER_SEC;
 
-			if (differenceInTime > 2)
+			if (differenceInTime > 2.f)
 				continue;
 
 			// Ignore entities that are really far away
@@ -160,8 +162,8 @@ int main(int argc, char** argv) {
 		if (distanceToTarget > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
 		{
 			// Movement prediction
-			float dx = targetPlayer.x + targetPlayer.speedX*3 - x;
-			float dy = targetPlayer.y + targetPlayer.speedY*3 - y;
+			float dx = targetPlayer.x + targetPlayer.speedX*4 - x;
+			float dy = targetPlayer.y + targetPlayer.speedY*4 - y;
 
 			Vector2* vec = window.GetWindowPosition();
 
@@ -237,17 +239,17 @@ int main(int argc, char** argv) {
 			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 			//	SendInput(1, &keyEvent, sizeof(INPUT));
 			//}
-			//else if (distanceToTarget < 100.f)
+			//else if (distanceToTarget > 20.f && distanceToTarget < 100.f)
 			//{
-			//	// if in range cast E
+			//	// if in range cast 1
 			//	lastPressTime = clock();
 
-			//	// Press the "E" key
-			//	keyEvent.ki.wVk = 0x45; // virtual-key code for the "e" key
+			//	// Press the "1" key
+			//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
 			//	keyEvent.ki.dwFlags = 0; // 0 for key press
 			//	SendInput(1, &keyEvent, sizeof(INPUT));
 
-			//	// Release the "E" key
+			//	// Release the "1" key
 			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 			//	SendInput(1, &keyEvent, sizeof(INPUT));
 			//}
