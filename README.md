@@ -17,6 +17,6 @@ Note : if Battlerite has updated since the last commit then it's quite likely th
 # Use
 Simply have Battlerite.exe open and then run this program.
 
-Uncomment Jade "scripts" in main.cpp if you want to use them.
+Uncomment Jade "scripts" (Anti-gap closer and auto shift right click) in main.cpp if you want to use them.
 
 Hold mouse button 5 to disable aimbot.

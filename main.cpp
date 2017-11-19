@@ -65,6 +65,10 @@ int main(int argc, char** argv) {
 			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_TEAM + i * PLAYER_SIZE);
 			float targetY = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_Y + i * PLAYER_SIZE);
 
+			// Ignore other teams
+			if (targetTeam != 1 && targetTeam != 2)
+				continue;
+
 			// Distance to target
 			float dx = x - targetX;
 			float dy = y - targetY;
@@ -72,18 +76,6 @@ int main(int argc, char** argv) {
 
 			playerInformation[i].speedX = targetX - playerInformation[i].x;
 			playerInformation[i].speedY = targetY - playerInformation[i].y;
-
-			// Filter anomalous results, huge change in coordinates -> ignore
-			if ((int)targetX == 0 && (int)targetY == 0)
-				continue;
-			if (abs(playerInformation[i].speedX) > 5.f || abs(playerInformation[i].speedY) > 5.f)
-			{
-				playerInformation[i].previousX = playerInformation[i].x;
-				playerInformation[i].previousY = playerInformation[i].y;
-				playerInformation[i].x = targetX;
-				playerInformation[i].y = targetY;
-				continue;
-			}
 
 			// Ignore dead people or afk people (2 seconds)
 			if (abs(playerInformation[i].speedX) > 0.15f
@@ -116,11 +108,6 @@ int main(int argc, char** argv) {
 			{
 				closest2 = distanceToTarget;
 				closest2Index = i;
-			}
-			else
-			{
-				// Ignore teams other than 1 and 2
-				continue;
 			}
 
 			playerInformation[i].previousX = playerInformation[i].x;
@@ -225,34 +212,68 @@ int main(int argc, char** argv) {
 			keyEvent.ki.time = 0;
 			keyEvent.ki.dwExtraInfo = 0;
 
-			//if (distanceToTarget < 20.f)
-			//{
-			//	// if close enemy -> R
-			//	lastPressTime = clock();
+			if (distanceToTarget < 5.f)
+			{
+				// If very close then jump
 
-			//	// Press the "R" key
-			//	keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
-			//	keyEvent.ki.dwFlags = 0; // 0 for key press
-			//	SendInput(1, &keyEvent, sizeof(INPUT));
+				lastPressTime = clock();
 
-			//	// Release the "R" key
-			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-			//	SendInput(1, &keyEvent, sizeof(INPUT));
-			//}
-			//else if (distanceToTarget > 20.f && distanceToTarget < 100.f)
-			//{
-			//	// if in range cast 1
-			//	lastPressTime = clock();
+				// Press the space key
+				keyEvent.ki.wVk = VK_SPACE; // virtual-key code for the space key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
 
-			//	// Press the "1" key
-			//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-			//	keyEvent.ki.dwFlags = 0; // 0 for key press
-			//	SendInput(1, &keyEvent, sizeof(INPUT));
+				// Release the space key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
+			if (distanceToTarget < 10.f)
+			{
+				// Auto Knockback if very close, change to 20.f for normal range
 
-			//	// Release the "1" key
-			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-			//	SendInput(1, &keyEvent, sizeof(INPUT));
-			//}
+				lastPressTime = clock();
+
+				// Press the "R" key
+				keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
+
+				// Release the "R" key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
+			else if (distanceToTarget < 20.f)
+			{
+				// Auto EX STEALTH if near
+
+				// if in range cast 2
+				lastPressTime = clock();
+
+				// Press the "2" key
+				keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
+
+				// Release the "2" key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
+			else if (distanceToTarget > 20.f && distanceToTarget < 100.f)
+			{
+				// Auto EX SNIPE if not close and in range
+
+				// if in range cast 1
+				lastPressTime = clock();
+
+				// Press the "1" key
+				keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
+
+				// Release the "1" key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
 
 		}
 
