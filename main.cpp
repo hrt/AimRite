@@ -8,6 +8,7 @@
 #include "Offsets.hpp"
 #include <windows.h>
 #include <tlhelp32.h>
+#include <ctime>
 
 template<class c>
 c Read(HANDLE processHandle, DWORD dwAddress)
@@ -158,6 +159,7 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
+		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
 		if (distanceToTarget > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
 		{
@@ -208,6 +210,36 @@ int main(int argc, char** argv) {
 			mouse.executeMovementTo(window, *vec);
 			Sleep(50);
 		}
+
+		// Jade specific Anti-gap closers, uncomment if you want to use it
+		// if close enemy -> R
+		//if (distanceToTarget > 1.f && distanceToTarget < 20.f)
+		//{
+		//	static clock_t lastPressTime = clock();
+
+		//	float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
+		//	// Try twice a second
+		//	if (differenceInTime > 0.5)
+		//	{
+		//		// Update timer
+		//		lastPressTime = clock();
+
+		//		INPUT keyEvent;
+		//		keyEvent.type = INPUT_KEYBOARD;
+		//		keyEvent.ki.wScan = 0;
+		//		keyEvent.ki.time = 0;
+		//		keyEvent.ki.dwExtraInfo = 0;
+
+		//		// Press the "R" key
+		//		keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
+		//		keyEvent.ki.dwFlags = 0; // 0 for key press
+		//		SendInput(1, &keyEvent, sizeof(INPUT));
+
+		//		// Release the "R" key
+		//		keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+		//		SendInput(1, &keyEvent, sizeof(INPUT));
+		//	}
+		//}
 	}
 
 	return EXIT_SUCCESS;
