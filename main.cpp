@@ -210,9 +210,9 @@ int main(int argc, char** argv) {
 		}
 
 
-		/* Scripts begin */
-		// Jade specific Anti-gap closers, uncomment if you want to use it
-		// if in range to E -> E
+		// Jade scripts, uncomment to use
+		// Anti-gap closer R
+		// Auto E in range
 
 		static clock_t lastPressTime = clock();
 		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
