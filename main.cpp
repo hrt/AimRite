@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 		DWORD m3 = Read<DWORD>(memory.handle, m2 + OFFSET_ENTITY_LIST[2]);
 		DWORD m4 = Read<DWORD>(memory.handle, m3 + OFFSET_ENTITY_LIST[3]);
 
-		// Find closest player for teams 1 and 2 respectively
+		// Find closest player for allies and enemies
 		float closest1 = 1000000000.f;
 		float closest2 = 1000000000.f;
 		int closest1Index = -1;
@@ -58,6 +58,7 @@ int main(int argc, char** argv) {
 		// Local players team
 		int playerTeam = -1;
 
+		// Loop through entities
 		for (int i = 0; i < 5; i++)
 		{
 			float targetX = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_X + i * PLAYER_SIZE);
@@ -82,7 +83,7 @@ int main(int argc, char** argv) {
 				continue;
 			}
 
-			// Ignore dead people or afk people (1 second)
+			// Ignore dead people or afk people (2 seconds)
 			if (abs(playerInformation[i].speedX) > 0.1f
 				|| abs(playerInformation[i].speedY) > 0.1f)
 			{
@@ -97,14 +98,11 @@ int main(int argc, char** argv) {
 
 			// Ignore entities that are really far away
 			if (distanceToTarget > 1000.f)
-			{
 				continue;
-			}
 
-			// Update closest target information
 			if (distanceToTarget < 1.f)
 			{
-				// Local player
+				// Local player found
 				playerTeam = targetTeam;
 			}
 			else if (targetTeam == 1 && distanceToTarget < closest1)
