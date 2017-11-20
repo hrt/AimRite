@@ -77,9 +77,9 @@ int main(int argc, char** argv) {
 			playerInformation[i].speedX = targetX - playerInformation[i].x;
 			playerInformation[i].speedY = targetY - playerInformation[i].y;
 
-			// Ignore dead people or afk people (2 seconds)
-			if (abs(playerInformation[i].speedX) > 0.15f
-				|| abs(playerInformation[i].speedY) > 0.15f)
+			// Ignore dead people or afk people (1 seconds)
+			if (abs(playerInformation[i].speedX) > 0.1f
+				|| abs(playerInformation[i].speedY) > 0.1f)
 			{
 				// Update timer
 				playerInformation[i].lastUpdate = clock();
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
 
 			float differenceInTime = (clock() - playerInformation[i].lastUpdate) / CLOCKS_PER_SEC;
 
-			if (differenceInTime > 2.f)
+			if (differenceInTime > 1.f)
 				continue;
 
 			// Ignore entities that are really far away

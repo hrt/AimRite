@@ -20,3 +20,10 @@ Simply have Battlerite.exe open and then run this program.
 Uncomment Jade "scripts" (Anti-gap closer and auto shift right click) in main.cpp if you want to use them.
 
 Hold mouse button 5 to disable aimbot.
+
+# Todo
+Find offsets for if player is countering, to implement ignore countering players
+
+Find offsets for player health, to target lower enemies or to steal orb with snipe at 44 health
+
+Find entity of orb, to steal it
