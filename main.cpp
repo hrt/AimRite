@@ -43,6 +43,8 @@ int main(int argc, char** argv) {
 		float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
 		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
 
+		std::cout << x << std::endl;
+
 		// Get entity list
 		DWORD m1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
 		DWORD m2 = Read<DWORD>(memory.handle, m1 + OFFSET_ENTITY_LIST[1]);
@@ -174,35 +176,9 @@ int main(int argc, char** argv) {
 				dy *= -1;
 			}
 
-			// To be as accurate as possible, aim at the edge of the screen that should aim through the target
-			if (abs(dy) > abs(dx))
-			{
-				float multiplier = abs((1080 / 2) / dy);
-
-				if (dy < 0)
-				{
-					vec->y = 1080;
-				}
-				else
-				{
-					vec->y = 0;
-				}
-				vec->x = 1920 / 2 + dx * multiplier;
-			}
-			else
-			{
-				float multiplier = abs((1920 / 2) / dx);
-
-				if (dx > 0)
-				{
-					vec->x = 1920;
-				}
-				else
-				{
-					vec->x = 0;
-				}
-				vec->y = 1080 / 2 - dy * multiplier;
-			}
+			// change this 69 till your cursor hits exactly on champ
+			vec->x = 1920 / 2 + dx * 69;
+			vec->y = 1080 / 2 - dy * 69;
 
 
 			mouse.executeMovementTo(window, *vec);
@@ -210,10 +186,7 @@ int main(int argc, char** argv) {
 		}
 
 
-		// Jade scripts, uncomment to use
-		// Anti - gap closer->R if near, Space if in range for stun
-		// Auto Ex Sniper -> if not close but still in range
-		// Auto Ex Stealth -> if an ally is alive near you(or no alive allies are near you) and enemy is near
+		// Ezo scripts, uncomment to use
 
 		static clock_t lastPressTime = clock();
 		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
@@ -226,67 +199,76 @@ int main(int argc, char** argv) {
 			keyEvent.ki.time = 0;
 			keyEvent.ki.dwExtraInfo = 0;
 
-			if (distanceToEnemy < 5.f)
+			if (distanceToEnemy > 0.f && differenceInTime > 0.5)
 			{
-				// If very close then jump
+				INPUT keyEvent;
+				keyEvent.type = INPUT_KEYBOARD;
+				keyEvent.ki.wScan = 0;
+				keyEvent.ki.time = 0;
+				keyEvent.ki.dwExtraInfo = 0;
 
-				lastPressTime = clock();
+				if (distanceToEnemy < 5.f)
+				{
+					// If very close then jump
 
-				// Press the space key
-				keyEvent.ki.wVk = VK_SPACE; // virtual-key code for the space key
-				keyEvent.ki.dwFlags = 0; // 0 for key press
-				SendInput(1, &keyEvent, sizeof(INPUT));
+					lastPressTime = clock();
 
-				// Release the space key
-				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				SendInput(1, &keyEvent, sizeof(INPUT));
-			}
-			if (distanceToEnemy < 10.f)
-			{
-				// Auto Knockback if very close, change to 20.f for normal range
+					// Press the space key
+					keyEvent.ki.wVk = VK_SPACE; // virtual-key code for the space key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
 
-				lastPressTime = clock();
+					// Release the space key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
+				if (distanceToEnemy < 10.f)
+				{
+					// Auto Knockback if very close, change to 20.f for normal range
 
-				// Press the "R" key
-				keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
-				keyEvent.ki.dwFlags = 0; // 0 for key press
-				SendInput(1, &keyEvent, sizeof(INPUT));
+					lastPressTime = clock();
 
-				// Release the "R" key
-				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				SendInput(1, &keyEvent, sizeof(INPUT));
-			}
-			if (distanceToEnemy < 20.f && distanceToAlly < 20.f)
-			{
-				// Auto EX STEALTH if near
+					// Press the "R" key
+					keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
 
-				// if in range cast 2
-				lastPressTime = clock();
+					// Release the "R" key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
+				if (distanceToEnemy < 20.f && distanceToAlly < 20.f)
+				{
+					// Auto EX STEALTH if near
 
-				// Press the "2" key
-				keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
-				keyEvent.ki.dwFlags = 0; // 0 for key press
-				SendInput(1, &keyEvent, sizeof(INPUT));
+					// if in range cast 2
+					lastPressTime = clock();
 
-				// Release the "2" key
-				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				SendInput(1, &keyEvent, sizeof(INPUT));
-			}
-			if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
-			{
-				// Auto EX SNIPE if not close and in range
+					// Press the "2" key
+					keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
 
-				// if in range cast 1
-				lastPressTime = clock();
+					// Release the "2" key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
+				if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
+				{
+					// Auto EX SNIPE if not close and in range
 
-				// Press the "1" key
-				keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-				keyEvent.ki.dwFlags = 0; // 0 for key press
-				SendInput(1, &keyEvent, sizeof(INPUT));
+					// if in range cast 1
+					lastPressTime = clock();
 
-				// Release the "1" key
-				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				SendInput(1, &keyEvent, sizeof(INPUT));
+					// Press the "1" key
+					keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
+
+					// Release the "1" key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
 			}
 
 		}
