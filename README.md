@@ -1,9 +1,9 @@
 # Aimrite - Battlerite Aimbot
 A simple hackathon like project based around the game http://store.steampowered.com/app/504370/Battlerite/
 
-[![Alt text](https://img.youtube.com/vi/qklJei0Me3s/0.jpg)](https://www.youtube.com/watch?v=qklJei0Me3s)
+[![Alt text](https://img.youtube.com/vi/65BwZJ3Y-7A/0.jpg)](https://www.youtube.com/watch?v=65BwZJ3Y-7A)
 
-https://www.youtube.com/watch?v=qklJei0Me3s
+https://www.youtube.com/watch?v=65BwZJ3Y-7A
 
 # Build (Windows)
 Change ```SCREEN_WIDTH```, ```SCREEN_HEIGHT```, ```WINDOW_WIDTH``` and ```WINDOW_HEIGHT``` definitions to your screen dimensions.
