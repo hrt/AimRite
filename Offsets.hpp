@@ -20,8 +20,8 @@ struct PlayerInformation
 	float y;
 	float previousX;
 	float previousY;
-	float speedX;
-	float speedY;
+	float velocityX;
+	float velocityY;
 	clock_t lastUpdate;
 };
 

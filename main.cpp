@@ -74,12 +74,12 @@ int main(int argc, char** argv) {
 			float dy = y - targetY;
 			float distanceToTarget = dx * dx + dy * dy;
 
-			playerInformation[i].speedX = targetX - playerInformation[i].x;
-			playerInformation[i].speedY = targetY - playerInformation[i].y;
+			playerInformation[i].velocityX = targetX - playerInformation[i].x;
+			playerInformation[i].velocityY = targetY - playerInformation[i].y;
 
 			// Ignore dead people or afk people (1 seconds)
-			if (abs(playerInformation[i].speedX) > 0.1f
-				|| abs(playerInformation[i].speedY) > 0.1f)
+			if (abs(playerInformation[i].velocityX) > 0.1f
+				|| abs(playerInformation[i].velocityY) > 0.1f)
 			{
 				// Update timer
 				playerInformation[i].lastUpdate = clock();
@@ -117,26 +117,38 @@ int main(int argc, char** argv) {
 		}
 
 		// Pick which closest player you want to target (ally or enemy)
-		float distanceToTarget = -1.f;
-		PlayerInformation targetPlayer;
+		float distanceToEnemy = -1.f;
+		float distanceToAlly = -1.f;
+		PlayerInformation targetEnemy;
+		PlayerInformation targetAlly;
 
 		if (playerTeam == 2)
 		{
-			if (closest1Index == -1)
+			if (closest1Index != -1)
 			{
-				continue;
+				distanceToEnemy = closest1;
+				targetEnemy = playerInformation[closest1Index];
 			}
-			 distanceToTarget = closest1;
-			targetPlayer = playerInformation[closest1Index];
+
+			if (closest2Index != -1)
+			{
+				distanceToAlly = closest2;
+				targetAlly = playerInformation[closest2Index];
+			}
 		}
 		else if (playerTeam == 1)
 		{
-			if (closest2Index == -1)
+			if (closest1Index != -1)
 			{
-				continue;
+				distanceToAlly = closest1;
+				targetAlly = playerInformation[closest1Index];
 			}
-			distanceToTarget = closest2;
-			targetPlayer = playerInformation[closest2Index];
+
+			if (closest2Index != -1)
+			{
+				distanceToEnemy = closest2;
+				targetEnemy = playerInformation[closest2Index];
+			}
 		}
 		else
 		{
@@ -144,13 +156,14 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
+
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
-		if (distanceToTarget > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
+		if (distanceToEnemy > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
 		{
 			// Movement prediction
-			float dx = targetPlayer.x + targetPlayer.speedX*4 - x;
-			float dy = targetPlayer.y + targetPlayer.speedY*4 - y;
+			float dx = targetEnemy.x + targetEnemy.velocityX*4 - x;
+			float dy = targetEnemy.y + targetEnemy.velocityY*4 - y;
 
 			Vector2* vec = window.GetWindowPosition();
 
@@ -198,13 +211,14 @@ int main(int argc, char** argv) {
 
 
 		// Jade scripts, uncomment to use
-		// Anti-gap closer R
-		// Auto E in range
+		// Anti - gap closer->R if near, Space if in range for stun
+		// Auto Ex Sniper -> if not close but still in range
+		// Auto Ex Stealth -> if an ally is alive near you(or no alive allies are near you) and enemy is near
 
 		static clock_t lastPressTime = clock();
 		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
 
-		if (distanceToTarget > 1.f && differenceInTime > 0.5)
+		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
 		{
 			INPUT keyEvent;
 			keyEvent.type = INPUT_KEYBOARD;
@@ -212,7 +226,7 @@ int main(int argc, char** argv) {
 			keyEvent.ki.time = 0;
 			keyEvent.ki.dwExtraInfo = 0;
 
-			if (distanceToTarget < 5.f)
+			if (distanceToEnemy < 5.f)
 			{
 				// If very close then jump
 
@@ -227,7 +241,7 @@ int main(int argc, char** argv) {
 				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
-			if (distanceToTarget < 10.f)
+			if (distanceToEnemy < 10.f)
 			{
 				// Auto Knockback if very close, change to 20.f for normal range
 
@@ -242,7 +256,7 @@ int main(int argc, char** argv) {
 				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
-			else if (distanceToTarget < 20.f)
+			if (distanceToEnemy < 20.f && distanceToAlly < 20.f)
 			{
 				// Auto EX STEALTH if near
 
@@ -258,7 +272,7 @@ int main(int argc, char** argv) {
 				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
-			else if (distanceToTarget > 20.f && distanceToTarget < 100.f)
+			if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
 			{
 				// Auto EX SNIPE if not close and in range
 

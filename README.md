@@ -21,9 +21,17 @@ Uncomment Jade "scripts" (Anti-gap closer and auto shift right click) in main.cp
 
 Hold mouse button 5 to disable aimbot.
 
+# Jade Scripts
+Anti-gap closer -> R if near, Space if in range for stun
+Auto Ex Sniper -> if not close but still in range
+Auto Ex Stealth -> if an ally is alive near you (or no alive allies are near you) and enemy is near
+
+
 # Todo
 Find offsets for if player is countering, to implement ignore countering players
 
 Find offsets for player health, to target lower enemies or to steal orb with snipe at 44 health
 
 Find entity of orb, to steal it
+
+Find more consistent offsets for local player x and y coordinates
