@@ -17,13 +17,17 @@ Note : if Battlerite has updated since the last commit then it's quite likely th
 # Use
 Simply have Battlerite.exe open and then run this program.
 
-Uncomment Jade "scripts" (Anti-gap closer and auto shift right click) in main.cpp if you want to use them.
+Switch to branch for scripts for specific character (e.g. Jade)
 
 Hold mouse button 5 to disable aimbot.
 
 # Jade Scripts
-Anti-gap closer -> R if near, Space if in range for stun
+Anti-gap closer -> R if near
+
+Space if in range for stun away from enemy
+
 Auto Ex Sniper -> if not close but still in range
+
 Auto Ex Stealth -> if an ally is alive near you (or no alive allies are near you) and enemy is near
 
 
