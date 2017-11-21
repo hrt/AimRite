@@ -43,8 +43,6 @@ int main(int argc, char** argv) {
 		float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
 		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
 
-		std::cout << x << std::endl;
-
 		// Get entity list
 		DWORD m1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
 		DWORD m2 = Read<DWORD>(memory.handle, m1 + OFFSET_ENTITY_LIST[1]);
@@ -63,12 +61,17 @@ int main(int argc, char** argv) {
 		// Loop through entities
 		for (int i = 0; i < 7; i++)
 		{
-			float targetX = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_X + i * PLAYER_SIZE);
-			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_TEAM + i * PLAYER_SIZE);
-			float targetY = Read<float>(memory.handle, m4 + OFFSET_PLAYER_START + OFFSET_PLAYER_Y + i * PLAYER_SIZE);
+			float targetX = Read<float>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
+			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_TEAM + i * PLAYER_SIZE);
+			float targetY = Read<float>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_Y + i * PLAYER_SIZE);
+			float targetDirection = Read<float>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION + i * PLAYER_SIZE);
 
 			// Ignore other teams
 			if (targetTeam != 1 && targetTeam != 2)
+				continue;
+
+			// Ignore skill shots
+			if (targetDirection)
 				continue;
 
 			// Distance to target
@@ -124,6 +127,7 @@ int main(int argc, char** argv) {
 		PlayerInformation targetEnemy;
 		PlayerInformation targetAlly;
 
+
 		if (playerTeam == 2)
 		{
 			if (closest1Index != -1)
@@ -157,7 +161,6 @@ int main(int argc, char** argv) {
 			// Local player is not on a team, may not be in game or dead so do not move mouse
 			continue;
 		}
-
 
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
