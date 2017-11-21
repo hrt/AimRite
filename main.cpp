@@ -17,6 +17,13 @@ c Read(HANDLE processHandle, DWORD dwAddress)
 	return val;
 }
 
+template<class c>
+BOOL Write(HANDLE processHandle, DWORD dwAddress, c ValueToWrite)
+{
+	return WriteProcessMemory(processHandle, (LPVOID)dwAddress, &ValueToWrite, sizeof(c), NULL);
+}
+
+
 int main(int argc, char** argv) {
 	MemoryManager memory;
 	WindowManager window;
@@ -33,21 +40,30 @@ int main(int argc, char** argv) {
 
 	while (window.WindowFocused() || window.WindowExists())
 	{
-		// Get local players coordinates
-		DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
-		DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
-		DWORD p3 = Read<DWORD>(memory.handle, p2 + OFFSET_LOCAL_PLAYER[2]);
-		DWORD p4 = Read<DWORD>(memory.handle, p3 + OFFSET_LOCAL_PLAYER[3]);
-		DWORD p5 = Read<DWORD>(memory.handle, p4 + OFFSET_LOCAL_PLAYER[4]);
+		// Get local players buttons
+		DWORD b1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_BUTTONS[0]);
+		DWORD b2 = Read<DWORD>(memory.handle, b1 + OFFSET_LOCAL_BUTTONS[1]);
+		DWORD b3 = Read<DWORD>(memory.handle, b2 + OFFSET_LOCAL_BUTTONS[2]);
+		DWORD b4 = Read<DWORD>(memory.handle, b3 + OFFSET_LOCAL_BUTTONS[3]);
+		DWORD b5 = Read<DWORD>(memory.handle, b4 + OFFSET_LOCAL_BUTTONS[4]);
 
-		float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
-		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
+		//Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, MOVE_LEFT + MOVE_DOWN);
+
+		// Get local players coordinates
+		DWORD c1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
+		DWORD c2 = Read<DWORD>(memory.handle, c1 + OFFSET_LOCAL_PLAYER[1]);
+		DWORD c3 = Read<DWORD>(memory.handle, c2 + OFFSET_LOCAL_PLAYER[2]);
+		DWORD c4 = Read<DWORD>(memory.handle, c3 + OFFSET_LOCAL_PLAYER[3]);
+		DWORD c5 = Read<DWORD>(memory.handle, c4 + OFFSET_LOCAL_PLAYER[4]);
+
+		float x = Read<float>(memory.handle, c5 + OFFSET_LOCAL_X);
+		float y = Read<float>(memory.handle, c5 + OFFSET_LOCAL_Y);
 
 		// Get entity list
-		DWORD m1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
-		DWORD m2 = Read<DWORD>(memory.handle, m1 + OFFSET_ENTITY_LIST[1]);
-		DWORD m3 = Read<DWORD>(memory.handle, m2 + OFFSET_ENTITY_LIST[2]);
-		DWORD m4 = Read<DWORD>(memory.handle, m3 + OFFSET_ENTITY_LIST[3]);
+		DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
+		DWORD e2 = Read<DWORD>(memory.handle, e1 + OFFSET_ENTITY_LIST[1]);
+		DWORD e3 = Read<DWORD>(memory.handle, e2 + OFFSET_ENTITY_LIST[2]);
+		DWORD e4 = Read<DWORD>(memory.handle, e3 + OFFSET_ENTITY_LIST[3]);
 
 		// Find closest player for allies and enemies
 		float closest1 = 1000000000.f;
@@ -55,23 +71,53 @@ int main(int argc, char** argv) {
 		int closest1Index = -1;
 		int closest2Index = -1;
 
+		// Is a projectile going to hit us from team X
+		bool projectileCollidesFromTeam1 = false;
+		bool projectileCollidesFromTeam2 = false;
+
 		// Local players team
 		int playerTeam = -1;
 
 		// Loop through entities
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < 10; i++)
 		{
-			float targetX = Read<float>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
-			int targetTeam = Read<int>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_TEAM + i * PLAYER_SIZE);
-			float targetY = Read<float>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_Y + i * PLAYER_SIZE);
-			float targetDirection = Read<float>(memory.handle, m4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION + i * PLAYER_SIZE);
+			float targetX = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
+			int targetTeam = Read<int>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_TEAM + i * PLAYER_SIZE);
+			float targetY = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_Y + i * PLAYER_SIZE);
+
+			// 1 is right -1 is left
+			float targetDirectionX = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_X + i * PLAYER_SIZE);
+			// 1 is up -1 is down
+			float targetDirectionY = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_Y + i * PLAYER_SIZE);
 
 			// Ignore other teams
 			if (targetTeam != 1 && targetTeam != 2)
 				continue;
 
-			// Ignore skill shots
-			if (targetDirection)
+			if (targetDirectionX || targetDirectionY)
+			{
+				// Trace ray with fixed range for all projectiles
+				for (int i = 0; i < 200; i++)
+				{
+					float projectedX = targetX + targetDirectionX/10 * i;
+					float projectedY = targetY + targetDirectionY/10 * i;
+
+					float diffX = abs(projectedX - x);
+					float diffY = abs(projectedY - y);
+
+					// If within threshold
+					if (diffX < 1.f && diffY < 1.f)
+					{
+						// We are going to / already have collided
+						projectileCollidesFromTeam1 |= targetTeam == 1;
+						projectileCollidesFromTeam2 |= targetTeam == 2;
+						break;
+					}
+				}
+			}
+
+			// Don't aim at projectiles
+			if (targetDirectionX || targetDirectionY)
 				continue;
 
 			// Distance to target
