@@ -120,6 +120,10 @@ int main(int argc, char** argv) {
 			if (targetDirectionX || targetDirectionY)
 				continue;
 
+			// Ignore orb and null
+			if (!targetX || !targetY)
+				continue;
+
 			// Distance to target
 			float dx = x - targetX;
 			float dy = y - targetY;
@@ -234,7 +238,7 @@ int main(int argc, char** argv) {
 
 
 			mouse.executeMovementTo(window, *vec);
-			Sleep(50);
+			Sleep(1);
 		}
 	}
 
