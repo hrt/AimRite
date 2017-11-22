@@ -94,10 +94,14 @@ int main(int argc, char** argv) {
 			if (targetTeam != 1 && targetTeam != 2)
 				continue;
 
+			// Out of map
+			if (targetX > 50.f || targetX < -50.f || targetY > 50.f || targetY < -50.f)
+				continue;
+
 			if (targetDirectionX || targetDirectionY)
 			{
 				// Trace ray with fixed range for all projectiles
-				for (int i = 0; i < 200; i++)
+				for (int i = 5; i < 200; i++)
 				{
 					float projectedX = targetX + targetDirectionX/10 * i;
 					float projectedY = targetY + targetDirectionY/10 * i;
