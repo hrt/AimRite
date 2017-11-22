@@ -172,10 +172,12 @@ int main(int argc, char** argv) {
 		float distanceToAlly = -1.f;
 		PlayerInformation targetEnemy;
 		PlayerInformation targetAlly;
+		bool projectileWillHitUs = false;
 
 
 		if (playerTeam == 2)
 		{
+			projectileWillHitUs = projectileCollidesFromTeam1;
 			if (closest1Index != -1)
 			{
 				distanceToEnemy = closest1;
@@ -190,6 +192,7 @@ int main(int argc, char** argv) {
 		}
 		else if (playerTeam == 1)
 		{
+			projectileWillHitUs = projectileCollidesFromTeam2;
 			if (closest1Index != -1)
 			{
 				distanceToAlly = closest1;
