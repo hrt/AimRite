@@ -28,7 +28,7 @@
 #define CAST_RIGHT 16
 #define CAST_MIDDLE 32
 
-const static DWORD OFFSET_LOCAL_PLAYER[] = { 0xF9AE70, 0xC, 0x614, 0x3E8, 0x1C };
+const static DWORD OFFSET_LOCAL_PLAYER[] = { 0xF9AE70, 0x38, 0x2F8, 0x598, 0x1C };
 const static DWORD OFFSET_LOCAL_X = 0x30;
 const static DWORD OFFSET_LOCAL_Y = 0x38;
 
