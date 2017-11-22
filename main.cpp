@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 				continue;
 
 			// Out of map
-			if (targetX > 50.f || targetX < -50.f || targetY > 50.f || targetY < -50.f)
+			if (targetX > 100.f || targetX < -100.f || targetY > 100.f || targetY < -100.f)
 				continue;
 
 			if (targetDirectionX || targetDirectionY)
@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
 
 
 			mouse.executeMovementTo(window, *vec);
-			Sleep(1);
+			Sleep(50);
 		}
 	}
 
