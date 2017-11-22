@@ -12,7 +12,7 @@ To build simple clone and open the solution in Visual Studio 2015 and build unde
 
 It's recommended that you play on locked screen.
 
-Adjust the number 69 in these lines
+Adjust the number 69 in these lines (around 250 in ```main.cpp``` https://github.com/ih1115/BattleriteAimbot/blob/master/main.cpp#L239)
 ```
 vec->x = 1920 / 2 + dx * 69;
 vec->y = 1080 / 2 - dy * 69;
