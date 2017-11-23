@@ -15,7 +15,9 @@ private:
 public:
 	HANDLE handle;
 	DWORD Battlerite_Base;
+	DWORD Battlerite_Size;
 	DWORD MonoDll_Base;
+	DWORD MonoDLL_Size;
 
 	MemoryManager();
 };
