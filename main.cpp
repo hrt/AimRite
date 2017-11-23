@@ -219,9 +219,12 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
+		// Do not case aggressive spells if mouse button 5 is held
+		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
+
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
-		if (distanceToEnemy > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
+		if (distanceToEnemy > 1.f && !passivePlay)
 		{
 			// Movement prediction
 			float dx = targetEnemy.x + targetEnemy.velocityX*4 - x;
