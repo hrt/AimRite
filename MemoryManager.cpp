@@ -75,12 +75,10 @@ MemoryManager::MemoryManager()
 			if (!strcmp((const char*)moduleEntry_.szModule, BATTLERITE_EXE.c_str()))
 			{
 				Battlerite_Base = (unsigned int)moduleEntry_.modBaseAddr;
-				Battlerite_Size = (unsigned int)moduleEntry_.modBaseSize;
 			}
 			if (!strcmp((const char*)moduleEntry_.szModule, MONO_DLL.c_str()))
 			{
 				MonoDll_Base = (unsigned int)moduleEntry_.modBaseAddr;
-				MonoDLL_Size = (unsigned int)moduleEntry_.modBaseSize;
 			}
 		} while (Module32Next(moduleSnapshotHandle_, &moduleEntry_));
 
