@@ -49,15 +49,34 @@ int main(int argc, char** argv) {
 
 		//Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, MOVE_LEFT + MOVE_DOWN);
 
-		// Get local players coordinates
-		DWORD c1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
-		DWORD c2 = Read<DWORD>(memory.handle, c1 + OFFSET_LOCAL_PLAYER[1]);
-		DWORD c3 = Read<DWORD>(memory.handle, c2 + OFFSET_LOCAL_PLAYER[2]);
-		DWORD c4 = Read<DWORD>(memory.handle, c3 + OFFSET_LOCAL_PLAYER[3]);
-		DWORD c5 = Read<DWORD>(memory.handle, c4 + OFFSET_LOCAL_PLAYER[4]);
+		// Get local players cooldowns
+		DWORD c1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_COOLDOWNS[0]);
+		DWORD c2 = Read<DWORD>(memory.handle, c1 + OFFSET_COOLDOWNS[1]);
+		DWORD c3 = Read<DWORD>(memory.handle, c2 + OFFSET_COOLDOWNS[2]);
+		DWORD c4 = Read<DWORD>(memory.handle, c3 + OFFSET_COOLDOWNS[3]);
+		DWORD c5 = Read<DWORD>(memory.handle, c4 + OFFSET_COOLDOWNS[4]);
 
-		float x = Read<float>(memory.handle, c5 + OFFSET_LOCAL_X);
-		float y = Read<float>(memory.handle, c5 + OFFSET_LOCAL_Y);
+		float cooldownQ = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_Q);
+		float cooldownR = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_R);
+		float cooldownE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_E);
+		float cooldownRIGHT = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_RIGHT);
+		float cooldownSPACE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_SPACE);
+
+		std::cout << cooldownQ << std::endl;
+		std::cout << cooldownR << std::endl;
+		std::cout << cooldownE << std::endl;
+		std::cout << cooldownRIGHT << std::endl;
+		std::cout << cooldownSPACE << std::endl;
+
+		// Get local players coordinates
+		DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
+		DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
+		DWORD p3 = Read<DWORD>(memory.handle, p2 + OFFSET_LOCAL_PLAYER[2]);
+		DWORD p4 = Read<DWORD>(memory.handle, p3 + OFFSET_LOCAL_PLAYER[3]);
+		DWORD p5 = Read<DWORD>(memory.handle, p4 + OFFSET_LOCAL_PLAYER[4]);
+
+		float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
+		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
 
 		// Get entity list
 		DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
