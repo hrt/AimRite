@@ -9,6 +9,33 @@
 #include <windows.h>
 #include <tlhelp32.h>
 
+
+BOOL CompareBytes(byte* data, byte* mask, char *_mask)
+{
+	for (; *_mask; ++_mask, ++data, ++mask)
+		if (*_mask == 'x' && *data != *mask)
+			return 0;
+
+	return (*_mask == 0);
+}
+
+uintptr_t FindPattern(HANDLE processHandle, uintptr_t start, size_t size, char* sig, char* mask)
+{
+	byte* data = new byte[size];
+
+	if (!ReadProcessMemory(processHandle, (void*)start, data, size, 0))
+		return 0;
+
+	for (uintptr_t i = 0; i < size; i++)
+		if (CompareBytes((byte*)(data + i), (byte*)sig, mask))
+			return start + i;
+
+	delete[] data;
+	return 0;
+}
+
+
+
 template<class c>
 c Read(HANDLE processHandle, DWORD dwAddress)
 {
@@ -37,6 +64,10 @@ int main(int argc, char** argv) {
 	std::cout << "Window found!" << std::endl << std::endl;
 
 	PlayerInformation playerInformation[20];
+
+	std::cout << (DWORD) (memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]) << std::endl;
+	DWORD baseTest = (DWORD)FindPattern(memory.handle, memory.MonoDll_Base, memory.MonoDLL_Size, "\xd8\xfe\xf4", "xxx");
+	std::cout << baseTest << std::endl;
 
 	while (window.WindowFocused() || window.WindowExists())
 	{
@@ -79,7 +110,8 @@ int main(int argc, char** argv) {
 		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
 
 		// Get entity list
-		DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
+		DWORD e1 = Read<DWORD>(memory.handle, baseTest);
+		//DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
 		DWORD e2 = Read<DWORD>(memory.handle, e1 + OFFSET_ENTITY_LIST[1]);
 		DWORD e3 = Read<DWORD>(memory.handle, e2 + OFFSET_ENTITY_LIST[2]);
 		DWORD e4 = Read<DWORD>(memory.handle, e3 + OFFSET_ENTITY_LIST[3]);
@@ -237,6 +269,8 @@ int main(int argc, char** argv) {
 			// Local player is not on a team, may not be in game or dead so do not move mouse
 			continue;
 		}
+
+		std::cout << "Closest enemy : " << targetEnemy.x << std::endl;
 
 		// Do not case aggressive spells if mouse button 5 is held
 		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
