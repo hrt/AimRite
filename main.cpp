@@ -292,8 +292,6 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
-		std::cout << "Closest enemy : " << targetEnemy.x << std::endl;
-
 		// Do not case aggressive spells if mouse button 5 is held
 		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
 
