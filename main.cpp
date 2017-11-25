@@ -92,6 +92,17 @@ int main(int argc, char** argv) {
 
 	std::cout << "Entity x coordinate : " << Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + 1 * PLAYER_SIZE) << std::endl;
 
+
+	DWORD t1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + 0x1F5964);
+	DWORD t2 = Read<DWORD>(memory.handle, t1 + 0x58);
+	DWORD t3 = Read<DWORD>(memory.handle, t2 + 0x3c0);
+	DWORD t4 = Read<DWORD>(memory.handle, t3 + 0xb4);
+	float test1 = Read<DWORD>(memory.handle, t4 + 0x350 + 0x18 + 0x13C);
+	DWORD t5 = Read<DWORD>(memory.handle, t4 + 0x350);
+	float test2 = Read<DWORD>(memory.handle, t5 + 0x18 + 0x13C);
+	std::cout << "Entity x coordinate : " << test1 << " (test1)" << std::endl;
+	std::cout << "Entity x coordinate : " << test2 << " (test2)" << std::endl;
+
 	while (window.WindowFocused() || window.WindowExists())
 	{
 		// Get local players buttons
