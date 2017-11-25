@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
 	DWORD monoDllBaseTest = 16 + (DWORD)FindPattern(memory.handle, memory.MonoDll_Base, memory.MonoDLL_Size, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xD0\x07\x00\x02\xD8\xFE", "xxxxxxxxxxxxxxxxxx");
 	std::cout << "Signature mono.dll base : " << monoDllBaseTest << std::endl;
 
-	DWORD p1 = Read<DWORD>(memory.handle, battleriteBaseTest);
+	DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 	DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
 	DWORD p3 = Read<DWORD>(memory.handle, p2 + OFFSET_LOCAL_PLAYER[2]);
 	DWORD p4 = Read<DWORD>(memory.handle, p3 + OFFSET_LOCAL_PLAYER[3]);
@@ -92,16 +92,17 @@ int main(int argc, char** argv) {
 
 	std::cout << "Entity x coordinate : " << Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + 1 * PLAYER_SIZE) << std::endl;
 
+	DWORD t1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + 0x01021708);
+	DWORD t2 = Read<DWORD>(memory.handle, t1 + 0x50);
+	DWORD t3 = Read<DWORD>(memory.handle, t2 + 0xC);
+	DWORD t4 = Read<DWORD>(memory.handle, t3 + 0x24);
+	DWORD t5 = Read<DWORD>(memory.handle, t4 + 0x60);
+	DWORD t6 = Read<DWORD>(memory.handle, t5 + 0x5B8);
+	DWORD t7 = Read<DWORD>(memory.handle, t6 + 0xB4);
+	DWORD t8 = Read<DWORD>(memory.handle, t7 + 0x98);
+	float someX = Read<float>(memory.handle, t8 + 0x260);
 
-	DWORD t1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + 0x1F5964);
-	DWORD t2 = Read<DWORD>(memory.handle, t1 + 0x58);
-	DWORD t3 = Read<DWORD>(memory.handle, t2 + 0x3c0);
-	DWORD t4 = Read<DWORD>(memory.handle, t3 + 0xb4);
-	float test1 = Read<DWORD>(memory.handle, t4 + 0x350 + 0x18 + 0x13C);
-	DWORD t5 = Read<DWORD>(memory.handle, t4 + 0x350);
-	float test2 = Read<DWORD>(memory.handle, t5 + 0x18 + 0x13C);
-	std::cout << "Entity x coordinate : " << test1 << " (test1)" << std::endl;
-	std::cout << "Entity x coordinate : " << test2 << " (test2)" << std::endl;
+	std::cout << "Test x coordinate : " << someX << std::endl;
 
 	while (window.WindowFocused() || window.WindowExists())
 	{
@@ -134,7 +135,7 @@ int main(int argc, char** argv) {
 		//std::cout << cooldownSPACE << std::endl;
 
 		// Get local players coordinates
-		DWORD p1 = Read<DWORD>(memory.handle, battleriteBaseTest);
+		DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 		DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
 		DWORD p3 = Read<DWORD>(memory.handle, p2 + OFFSET_LOCAL_PLAYER[2]);
 		DWORD p4 = Read<DWORD>(memory.handle, p3 + OFFSET_LOCAL_PLAYER[3]);
@@ -142,7 +143,6 @@ int main(int argc, char** argv) {
 
 		float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
 		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
-
 		// Get entity list
 		DWORD e1 = Read<DWORD>(memory.handle, monoDllBaseTest);
 		//DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
