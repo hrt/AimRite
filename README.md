@@ -25,12 +25,16 @@ Note : if Battlerite has updated since the last commit then it's quite likely th
 # Use
 Simply have ```Battlerite.exe``` open and then run this program.
 
+Please set your ingame settings to minimum and disable ```accelerate input``` under ```Gameplay``` then restart the game https://github.com/ih1115/BattleriteAimbot/issues/7
+
 Switch to branch for scripts for specific character (e.g. Jade)
 ```git checkout Jade```
 
 After compiling, open ```Battlerite``` and then run ```Aimrite``` which should be inside the ```Debug``` folder
 
 Hold mouse button 5 to disable aimbot.
+
+If it doesn't work then try restarting battelrite and try again https://github.com/ih1115/BattleriteAimbot/issues/2 .
 
 # Jade Scripts
 Anti-gap closer -> R if near
