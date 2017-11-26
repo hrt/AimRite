@@ -6,6 +6,7 @@
 #include "MouseManager.hpp"
 #include "MemoryManager.h"
 #include "Offsets.hpp"
+#include "Vector2.hpp"
 #include <windows.h>
 #include <tlhelp32.h>
 
@@ -42,8 +43,9 @@ int main(int argc, char** argv) {
 		DWORD c4 = memory.Read<DWORD>(c3 + OFFSET_LOCAL_PLAYER[3]);
 		DWORD c5 = memory.Read<DWORD>(c4 + OFFSET_LOCAL_PLAYER[4]);
 
-		float x = memory.Read<float>(c5 + OFFSET_LOCAL_X);
-		float y = memory.Read<float>(c5 + OFFSET_LOCAL_Y);
+		Vector2 localPosition;
+		localPosition.x = memory.Read<float>(c5 + OFFSET_LOCAL_X);
+		localPosition.y = memory.Read<float>(c5 + OFFSET_LOCAL_Y);
 
 		// Get entity list
 		DWORD e1 = memory.Read<DWORD>(memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
@@ -52,10 +54,10 @@ int main(int argc, char** argv) {
 		DWORD e4 = memory.Read<DWORD>(e3 + OFFSET_ENTITY_LIST[3]);
 
 		// Find closest player for allies and enemies
-		float closest1 = 1000000000.f;
-		float closest2 = 1000000000.f;
-		int closest1Index = -1;
-		int closest2Index = -1;
+		float distanceToClosestTeam1 = 1000000000.f;
+		float distanceToClosestTeam2 = 1000000000.f;
+		int closestTeam1Index = -1;
+		int closestTeam2Index = -1;
 
 		// Is a projectile going to hit us from team X
 		bool projectileCollidesFromTeam1 = false;
@@ -64,7 +66,7 @@ int main(int argc, char** argv) {
 		// Local players team
 		int playerTeam = -1;
 
-		// Loop through entities
+		// Loop through entities (includes projectiles)
 		for (int i = 0; i < 10; i++)
 		{
 			float targetX = memory.Read<float>(e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
@@ -92,8 +94,8 @@ int main(int argc, char** argv) {
 					float projectedX = targetX + targetDirectionX/10 * i;
 					float projectedY = targetY + targetDirectionY/10 * i;
 
-					float diffX = abs(projectedX - x);
-					float diffY = abs(projectedY - y);
+					float diffX = abs(projectedX - localPosition.x);
+					float diffY = abs(projectedY - localPosition.y);
 
 					// If within threshold
 					if (diffX < 1.f && diffY < 1.f)
@@ -115,8 +117,8 @@ int main(int argc, char** argv) {
 				continue;
 
 			// Distance to target
-			float dx = x - targetX;
-			float dy = y - targetY;
+			float dx = localPosition.x - targetX;
+			float dy = localPosition.y - targetY;
 			float distanceToTarget = dx * dx + dy * dy;
 
 			playerInformation[i].velocityX = targetX - playerInformation[i].x;
@@ -144,15 +146,15 @@ int main(int argc, char** argv) {
 				// Local player found
 				playerTeam = targetTeam;
 			}
-			else if (targetTeam == 1 && distanceToTarget < closest1)
+			else if (targetTeam == 1 && distanceToTarget < distanceToClosestTeam1)
 			{
-				closest1 = distanceToTarget;
-				closest1Index = i;
+				distanceToClosestTeam1 = distanceToTarget;
+				closestTeam1Index = i;
 			}
-			else if (targetTeam == 2 && distanceToTarget < closest2)
+			else if (targetTeam == 2 && distanceToTarget < distanceToClosestTeam2)
 			{
-				closest2 = distanceToTarget;
-				closest2Index = i;
+				distanceToClosestTeam2 = distanceToTarget;
+				closestTeam2Index = i;
 			}
 
 			playerInformation[i].previousX = playerInformation[i].x;
@@ -162,8 +164,8 @@ int main(int argc, char** argv) {
 		}
 
 		// Pick which closest player you want to target (ally or enemy)
-		float distanceToEnemy = -1.f;
-		float distanceToAlly = -1.f;
+		float distanceToClosestEnemy = -1.f;
+		float distanceToClosestAlly = -1.f;
 		PlayerInformation targetEnemy;
 		PlayerInformation targetAlly;
 		bool projectileWillHitUs = false;
@@ -172,31 +174,31 @@ int main(int argc, char** argv) {
 		if (playerTeam == 2)
 		{
 			projectileWillHitUs = projectileCollidesFromTeam1;
-			if (closest1Index != -1)
+			if (closestTeam1Index != -1)
 			{
-				distanceToEnemy = closest1;
-				targetEnemy = playerInformation[closest1Index];
+				distanceToClosestEnemy = distanceToClosestTeam1;
+				targetEnemy = playerInformation[closestTeam1Index];
 			}
 
-			if (closest2Index != -1)
+			if (closestTeam2Index != -1)
 			{
-				distanceToAlly = closest2;
-				targetAlly = playerInformation[closest2Index];
+				distanceToClosestAlly = distanceToClosestTeam2;
+				targetAlly = playerInformation[closestTeam2Index];
 			}
 		}
 		else if (playerTeam == 1)
 		{
 			projectileWillHitUs = projectileCollidesFromTeam2;
-			if (closest1Index != -1)
+			if (closestTeam1Index != -1)
 			{
-				distanceToAlly = closest1;
-				targetAlly = playerInformation[closest1Index];
+				distanceToClosestAlly = distanceToClosestTeam1;
+				targetAlly = playerInformation[closestTeam1Index];
 			}
 
-			if (closest2Index != -1)
+			if (closestTeam2Index != -1)
 			{
-				distanceToEnemy = closest2;
-				targetEnemy = playerInformation[closest2Index];
+				distanceToClosestEnemy = distanceToClosestTeam2;
+				targetEnemy = playerInformation[closestTeam2Index];
 			}
 		}
 		else
@@ -210,11 +212,11 @@ int main(int argc, char** argv) {
 
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
-		if (distanceToEnemy > 1.f && !passivePlay)
+		if (distanceToClosestEnemy > 1.f && !passivePlay)
 		{
 			// Movement prediction
-			float dx = targetEnemy.x + targetEnemy.velocityX*4 - x;
-			float dy = targetEnemy.y + targetEnemy.velocityY*4 - y;
+			float dx = targetEnemy.x + targetEnemy.velocityX*4 - localPosition.x;
+			float dy = targetEnemy.y + targetEnemy.velocityY*4 - localPosition.y;
 
 			Vector2* vec = window.GetWindowPosition();
 
