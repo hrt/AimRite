@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
 			float dx = targetEnemy.x + targetEnemy.velocityX*4 - localPosition.x;
 			float dy = targetEnemy.y + targetEnemy.velocityY*4 - localPosition.y;
 
-			Vector2* vec = window.GetWindowPosition();
+			Vector2 vec = window.GetWindowPosition();
 
 			// Screen is flipped for team 2
 			if (playerTeam == 2)
@@ -228,11 +228,11 @@ int main(int argc, char** argv) {
 			}
 
 			// change this 69 till your cursor hits exactly on champ
-			vec->x = 1920 / 2 + dx * 69;
-			vec->y = 1080 / 2 - dy * 69;
+			vec.x = 1920 / 2 + dx * 69;
+			vec.y = 1080 / 2 - dy * 69;
 
 
-			mouse.executeMovementTo(window, *vec);
+			mouse.executeMovementTo(window, vec);
 			Sleep(50);
 		}
 	}
