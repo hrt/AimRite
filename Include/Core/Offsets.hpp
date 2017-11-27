@@ -45,13 +45,24 @@ const static DWORD OFFSET_LOCAL_NUMERIC = 0x324;
 const static DWORD OFFSET_LOCAL_MOUSE = 0x348;
 
 const static DWORD OFFSET_ENTITY_LIST[] = { 0x001F55EC, 0x40, 0xB4, 0x98 };
-const static DWORD PLAYER_SIZE = 0x2C;
+const static DWORD ENTITY_SIZE = 0x2C;
 const static DWORD OFFSET_ENTITY_START = 0x214;
-const static DWORD OFFSET_ENTITY_DIRECTION_X = 0x28;
-const static DWORD OFFSET_ENTITY_DIRECTION_Y = 0x2C;
-const static DWORD OFFSET_ENTITY_X = 0x20;
-const static DWORD OFFSET_ENTITY_Y = 0x24;
-const static DWORD OFFSET_ENTITY_TEAM = 0x18;
+
+struct EntityInformation
+{
+	DWORD unknown0;
+	DWORD unknown4;
+	DWORD unknown8;
+	DWORD unknownC;
+	DWORD unknown10;
+	DWORD unknown14;
+	int team;
+	DWORD unknown1C;
+	float x;
+	float y;
+	float directionX;
+	float directionY;
+};
 
 struct PlayerInformation
 {

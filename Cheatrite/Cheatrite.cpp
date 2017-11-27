@@ -161,30 +161,23 @@ void Cheatrite::run()
 		// Loop through entities
 		for (int i = 0; i < 10; i++)
 		{
-			float targetX = memory.Read<float>(e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
-			int targetTeam = memory.Read<int>(e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_TEAM + i * PLAYER_SIZE);
-			float targetY = memory.Read<float>(e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_Y + i * PLAYER_SIZE);
-
-			// 1 is right -1 is left
-			float targetDirectionX = memory.Read<float>(e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_X + i * PLAYER_SIZE);
-			// 1 is up -1 is down
-			float targetDirectionY = memory.Read<float>(e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_Y + i * PLAYER_SIZE);
+			EntityInformation entity = memory.Read<EntityInformation>(e4 + OFFSET_ENTITY_START + i * ENTITY_SIZE);
 
 			// Ignore other teams
-			if (targetTeam != 1 && targetTeam != 2)
+			if (entity.team != 1 && entity.team != 2)
 				continue;
 
 			// Out of map
-			if (targetX > 100.f || targetX < -100.f || targetY > 100.f || targetY < -100.f)
+			if (entity.x > 100.f || entity.x < -100.f || entity.y > 100.f || entity.y < -100.f)
 				continue;
 
-			if (targetDirectionX || targetDirectionY)
+			if (entity.directionX || entity.directionY)
 			{
 				// Trace ray with fixed range for all projectiles
 				for (int i = 5; i < 200; i++)
 				{
-					float projectedX = targetX + targetDirectionX / 10 * i;
-					float projectedY = targetY + targetDirectionY / 10 * i;
+					float projectedX = entity.x + entity.directionX / 10 * i;
+					float projectedY = entity.y + entity.directionY / 10 * i;
 
 					float diffX = abs(projectedX - x);
 					float diffY = abs(projectedY - y);
@@ -193,28 +186,28 @@ void Cheatrite::run()
 					if (diffX < 1.f && diffY < 1.f)
 					{
 						// We are going to / already have collided
-						projectileCollidesFromTeam1 |= targetTeam == 1;
-						projectileCollidesFromTeam2 |= targetTeam == 2;
+						projectileCollidesFromTeam1 |= entity.team == 1;
+						projectileCollidesFromTeam2 |= entity.team == 2;
 						break;
 					}
 				}
 			}
 
 			// Don't aim at projectiles
-			if (targetDirectionX || targetDirectionY)
+			if (entity.directionX || entity.directionY)
 				continue;
 
 			// Ignore orb and null
-			if (!targetX || !targetY)
+			if (!entity.x || !entity.y)
 				continue;
 
 			// Distance to target
-			float dx = x - targetX;
-			float dy = y - targetY;
+			float dx = x - entity.x;
+			float dy = y - entity.y;
 			float distanceToTarget = dx * dx + dy * dy;
 
-			playerInformation[i].velocityX = targetX - playerInformation[i].x;
-			playerInformation[i].velocityY = targetY - playerInformation[i].y;
+			playerInformation[i].velocityX = entity.x - playerInformation[i].x;
+			playerInformation[i].velocityY = entity.y - playerInformation[i].y;
 
 			// Ignore dead people or afk people (1 seconds)
 			if (abs(playerInformation[i].velocityX) > 0.1f
@@ -236,14 +229,14 @@ void Cheatrite::run()
 			if (distanceToTarget < 1.f)
 			{
 				// Local player found
-				playerTeam = targetTeam;
+				playerTeam = entity.team;
 			}
-			else if (targetTeam == 1 && distanceToTarget < closest1)
+			else if (entity.team == 1 && distanceToTarget < closest1)
 			{
 				closest1 = distanceToTarget;
 				closest1Index = i;
 			}
-			else if (targetTeam == 2 && distanceToTarget < closest2)
+			else if (entity.team == 2 && distanceToTarget < closest2)
 			{
 				closest2 = distanceToTarget;
 				closest2Index = i;
@@ -251,8 +244,8 @@ void Cheatrite::run()
 
 			playerInformation[i].previousX = playerInformation[i].x;
 			playerInformation[i].previousY = playerInformation[i].y;
-			playerInformation[i].x = targetX;
-			playerInformation[i].y = targetY;
+			playerInformation[i].x = entity.x;
+			playerInformation[i].y = entity.y;
 		}
 
 		// Pick which closest player you want to target (ally or enemy)
