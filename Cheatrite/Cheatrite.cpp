@@ -123,21 +123,27 @@ void Cheatrite::run()
 		PlayerInformation localPlayer;
 
 		// Get local players coordinates
-		DWORD c1 = memory.Read<DWORD>(memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
-		DWORD c2 = memory.Read<DWORD>(c1 + OFFSET_LOCAL_PLAYER[1]);
-		DWORD c3 = memory.Read<DWORD>(c2 + OFFSET_LOCAL_PLAYER[2]);
-		DWORD c4 = memory.Read<DWORD>(c3 + OFFSET_LOCAL_PLAYER[3]);
-		DWORD c5 = memory.Read<DWORD>(c4 + OFFSET_LOCAL_PLAYER[4]);
+		DWORD a1 = memory.Read<DWORD>(memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
+		DWORD a2 = memory.Read<DWORD>(a1 + OFFSET_LOCAL_PLAYER[1]);
+		DWORD a3 = memory.Read<DWORD>(a2 + OFFSET_LOCAL_PLAYER[2]);
+		DWORD a4 = memory.Read<DWORD>(a3 + OFFSET_LOCAL_PLAYER[3]);
+		DWORD a5 = memory.Read<DWORD>(a4 + OFFSET_LOCAL_PLAYER[4]);
 
-		localPlayer.x = memory.Read<float>(c5 + OFFSET_LOCAL_X);
-		localPlayer.y = memory.Read<float>(c5 + OFFSET_LOCAL_Y);
+		localPlayer.x = memory.Read<float>(a5 + OFFSET_LOCAL_X);
+		localPlayer.y = memory.Read<float>(a5 + OFFSET_LOCAL_Y);
 
 		// Get champion list
-		DWORD e1 = memory.Read<DWORD>(memory.MonoDll_Base + OFFSET_CHAMPION_LIST[0]);
-		DWORD e2 = memory.Read<DWORD>(e1 + OFFSET_CHAMPION_LIST[1]);
-		DWORD e3 = memory.Read<DWORD>(e2 + OFFSET_CHAMPION_LIST[2]);
-		DWORD e4 = memory.Read<DWORD>(e3 + OFFSET_CHAMPION_LIST[3]);
-		DWORD e5 = memory.Read<DWORD>(e4 + OFFSET_CHAMPION_LIST[4]);
+		DWORD b1 = memory.Read<DWORD>(memory.MonoDll_Base + OFFSET_CHAMPION_LIST[0]);
+		DWORD b2 = memory.Read<DWORD>(b1 + OFFSET_CHAMPION_LIST[1]);
+		DWORD b3 = memory.Read<DWORD>(b2 + OFFSET_CHAMPION_LIST[2]);
+		DWORD b4 = memory.Read<DWORD>(b3 + OFFSET_CHAMPION_LIST[3]);
+		DWORD b5 = memory.Read<DWORD>(b4 + OFFSET_CHAMPION_LIST[4]);
+
+		// Get Entity list
+		DWORD c1 = memory.Read<DWORD>(memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
+		DWORD c2 = memory.Read<DWORD>(c1 + OFFSET_ENTITY_LIST[1]);
+		DWORD c3 = memory.Read<DWORD>(c2 + OFFSET_ENTITY_LIST[2]);
+		DWORD c4 = memory.Read<DWORD>(c3 + OFFSET_ENTITY_LIST[3]);
 
 		// Find closest player for allies and enemies
 		float closest1 = 1000000000.f;
@@ -155,7 +161,7 @@ void Cheatrite::run()
 		// Loop through champions
 		for (int i = 0; i < 10; i++)
 		{
-			ChampionInformation champion = memory.Read<ChampionInformation>(e5 + OFFSET_CHAMPION_START + i * CHAMPION_SIZE);
+			ChampionInformation champion = memory.Read<ChampionInformation>(b5 + OFFSET_CHAMPION_START + i * CHAMPION_SIZE);
 
 			// Ignore other teams
 			if (champion.team != TEAM_1 && champion.team != TEAM_2)
@@ -210,6 +216,48 @@ void Cheatrite::run()
 			playerInformation[i].maxHP = champion.maxHP;
 			playerInformation[i].currentEnergy = champion.currentEnergy;
 			playerInformation[i].maxEnergy = champion.maxEnergy;
+		}
+
+
+		// Loop through entities to find projectiles
+		for (int i = 0; i < 15; i++)
+		{
+			EntityInformation entity = memory.Read<EntityInformation>(c4 + OFFSET_ENTITY_START + i * ENTITY_SIZE);
+
+			// Ignore other teams
+			if (entity.team != TEAM_1 && entity.team != TEAM_2)
+				continue;
+
+			// Out of map
+			if (entity.x > 100.f || entity.x < -100.f || entity.y > 100.f || entity.y < -100.f)
+				continue;
+
+			// Ignore orb and null
+			if (!entity.x || !entity.y)
+				continue;
+
+			// If moving projectile
+			if (entity.directionX || entity.directionY)
+			{
+				// Trace ray with fixed range for all projectiles
+				for (int i = 5; i < 200; i++)
+				{
+					float projectedX = entity.x + entity.directionX / 10 * i;
+					float projectedY = entity.y + entity.directionY / 10 * i;
+
+					float diffX = abs(projectedX - localPlayer.x);
+					float diffY = abs(projectedY - localPlayer.y);
+
+					// If within threshold
+					if (diffX < 1.f && diffY < 1.f)
+					{
+						// We are going to / already have collided
+						projectileCollidesFromTeam1 |= entity.team == TEAM_1;
+						projectileCollidesFromTeam2 |= entity.team == TEAM_2;
+						break;
+					}
+				}
+			}
 		}
 
 		// Pick which closest player you want to target (ally or enemy)
@@ -546,7 +594,6 @@ void Cheatrite::run()
 					if (projectileWillHitUs && distanceToEnemy < 80.f)
 					{
 						// Auto block projectile
-
 						lastPressTime = clock();
 
 						// Press the "Q" key
