@@ -25,8 +25,8 @@ Cheatrite::~Cheatrite()
 
 void Cheatrite::run()
 {
-	bool numAddPressed = false;
-	bool numSubtractPressed = false;
+	bool pageUpPressed = false;
+	bool pageDownPressed = false;
 	int offset = 50;
 	bool controlPressed = false;
 	bool enableAimbot = true;
@@ -92,24 +92,24 @@ windowFocused:
 				controlPressed = false;
 			}
 
-			if ((GetKeyState(VK_SUBTRACT) & 0x8000) != 0) {
-				if (!numSubtractPressed) {
-					numSubtractPressed = true;
+			if ((GetKeyState(VK_NEXT) & 0x8000) != 0) {
+				if (!pageDownPressed) {
+					pageDownPressed = true;
 					offset--;
 				}
 			}
 			else {
-				numSubtractPressed = false;
+				pageDownPressed = false;
 			}
 
-			if ((GetKeyState(VK_ADD) & 0x8000) != 0) {
-				if (!numAddPressed) {
-					numAddPressed = true;
+			if ((GetKeyState(VK_PRIOR) & 0x8000) != 0) {
+				if (!pageUpPressed) {
+					pageUpPressed = true;
 					offset++;
 				}
 			}
 			else {
-				numAddPressed = false;
+				pageUpPressed = false;
 			}
 
 			// Get local players buttons
