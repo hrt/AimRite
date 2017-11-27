@@ -18,6 +18,20 @@ public:
 	DWORD Battlerite_Base;
 	DWORD MonoDll_Base;
 
+  template<class c>
+  c Read(DWORD dwAddress)
+  {
+    c val;
+    ReadProcessMemory(handle, (LPVOID)dwAddress, &val, sizeof(c), NULL);
+    return val;
+  }
+
+  template<class c>
+  BOOL Write(DWORD dwAddress, c ValueToWrite)
+  {
+    return WriteProcessMemory(handle, (LPVOID)dwAddress, &ValueToWrite, sizeof(c), NULL);
+  }
+
 	MemoryManager();
 };
 
