@@ -17,6 +17,7 @@
 [Rr]eleases/
 x64/
 x86/
+binaries/
 build/
 bld/
 [Bb]in/
@@ -228,3 +229,5 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+*.lib
+*.pdb

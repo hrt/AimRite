@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "WindowManager.hpp"
+#include "headers/WindowManager.hpp"
 
 HWND WindowManager::window = nullptr;
 
@@ -12,8 +12,8 @@ void WindowManager::FindWindow()
 	EnumWindows(SearchProc, 0);
 	if (!WindowManager::window)
 		Sleep(500);
-	}
-	
+}
+
 bool WindowManager::WindowFound()
 {
 	return WindowManager::window != nullptr;

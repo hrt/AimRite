@@ -3,6 +3,8 @@
 #ifndef _MOUSE_MANAGER_H
 #define _MOUSE_MANAGER_H
 
+#include <stdlib.h>
+#include <time.h>
 #include "WindowManager.hpp"
 #include "Vector2.hpp"
 

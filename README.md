@@ -1,56 +1,64 @@
-# Aimrite - Battlerite Aimbot
-A simple hackathon like project based around the game http://store.steampowered.com/app/504370/Battlerite/
+# Battlerite Aimbot and Scripts
+This is a very basic external way to add aimbot and scripting to Battlerite.
 
-[![Alt text](https://img.youtube.com/vi/RPr5pDSZ7gE/0.jpg)](https://www.youtube.com/watch?v=RPr5pDSZ7gE)
+Discord server for more support: https://discord.gg/qF5Hggk
 
+[![Preview of Cheatrite on Youtube](https://img.youtube.com/vi/RPr5pDSZ7gE/0.jpg)](https://www.youtube.com/watch?v=RPr5pDSZ7gE)
 https://www.youtube.com/watch?v=RPr5pDSZ7gE
 
 # Build (Windows)
-Change ```SCREEN_WIDTH```, ```SCREEN_HEIGHT```, ```WINDOW_WIDTH``` and ```WINDOW_HEIGHT``` definitions to your screen dimensions.
+To build, clone this repository, open the solution (.sln) file and build the solution in Visual Studio under Debug x86.
+The [static library](https://github.com/escitue/BattleriteAimbot/tree/master/Core) will automatically build in your solution directory and copy headers to their appropriate folders.
+[Cheatrite](https://github.com/ih1115/CheatRite/tree/master/Hack) will build in your solution directory under the folder "binaries".
 
-To build simple clone and open the solution in Visual Studio 2015 and build under Debug x86
+# Notes and changes
+I'll try to update this as soon as I can.
 
-It's recommended that you play on locked screen.
+#### Todo (General):
+- [x] Edit controls
+- [x] Automatically get screen size
+- [x] Add compensation for locked and unlocked screen ([EXPERIMENTAL, READ THIS](https://github.com/ih1115/Cheatrite/blob/master/README.md#experimental))
+- [x] Add correct maximum range for aimbot so it doesn't go out of game screen when using multiple monitors
+- [ ] Add more smooth aim to look less suspicious
+- [ ] Add aim prediction
+- [ ] Draw a map overlay to the window to show location of people in FoW
+- [ ] Get orb entities and draw timers on screen
 
-Adjust the number 69 in these lines (around 250 in ```main.cpp``` https://github.com/ih1115/BattleriteAimbot/blob/master/main.cpp#L239)
-```
-vec->x = 1920 / 2 + dx * 69;
-vec->y = 1080 / 2 - dy * 69;
-```
-Until the aimbot places the cross-hair directly on-top of the enemy
+#### Todo (Scripts):
+- [ ] Bakko Scripts
+- [ ] Thorn Scripts
+- [ ] Improve Jade Scripts
+- [ ] Improve Raigon Scripts
+- [ ] Create signatures instead of fixed pointers such that battlerite updates do not require code change
+- [ ] Find offsets for champion list (instead of entity/projectile list) containing information on champion (max and current)health, energy, and status (casting / stunned / countering / blocking).
+- [ ] Find more reliable local position offset
 
+#### Mouse Offset
+Originally, you had to change the "offset", or as some of you might know, the "69" until you locked on to the enemy.
+In this version, you can simply press the + and - key on your numpad to increase and decrease the "offset". Go into a practice game versus a bot, 1v1, and press + and - until your cursor is on the character at all times.
+Right now, the offset does not save anywhere, so you will have to manually edit it everytime you reopen the game and Cheatrite.
 
-Note : if Battlerite has updated since the last commit then it's quite likely that you will have to update ```Offsets.hpp```.
+#### Controls
+Left Control Key: Enable / Disable Aimbot (enabled by default)
+Caps Lock Key: Enable / Disable Scripts (enabled by default)
+Page UP Key: Increase aimbot offset
+Page DOWN Key: Decrease aimbot offset
+Middle Mouse Button: Change offset from locked and unlocked ([EXPERIMENTAL, READ THIS](https://github.com/ih1115/Cheatrite/blob/master/README.md#experimental))
 
-# Use
-Simply have ```Battlerite.exe``` open and then run this program.
+#### Using different scripts
+Upon running, you can choose whatever script you wish to use.
 
-Please set your ingame settings to minimum and disable ```accelerate input``` under ```Gameplay``` then restart the game https://github.com/ih1115/BattleriteAimbot/issues/7
+# Run
+Pretty simple to run, open Battlerite and then open Aimrite.
+Either build the solution yourself, or go to [releases](https://github.com/ih1115/CheatRite/releases) and download the latest release.
 
-Switch to branch for scripts for specific character (e.g. Jade)
-```git checkout Jade```
+#### Game Configuration
+Please set your ingame settings to minimum and disable ```accelerate input``` under ```Gameplay``` then restart the game ([Issue](https://github.com/ih1115/BattleriteAimbot/issues/7))
 
-After compiling, open ```Battlerite``` and then run ```Aimrite``` which should be inside the ```Debug``` folder
+# Issues
+Hack not working? [Issue #2](https://github.com/ih1115/CheatRite/issues/2) and [Issue #7](https://github.com/ih1115/CheatRite/issues/7)
 
-Hold mouse button 5 to disable aimbot.
+# Experimental
+Added compensation for switching from locked to unlocked camera view, however, it's a hardcoded number, not calculated in the slightest. It may be way off, or it may be on point.
+Make sure your camera is default LOCKED. When in game, press the middle mouse button to tell the aimbot to switch to unlocked camera and vice versa. Also change your controls in Battlerite from making camera locked and unlocked to the middle mouse button. They should work perfectly together.
 
-If it doesn't work then try restarting battelrite and try again https://github.com/ih1115/BattleriteAimbot/issues/2 .
-
-# Jade Scripts
-Anti-gap closer -> R if near
-
-Space if in range for stun away from enemy
-
-Auto Ex Sniper -> if not close but still in range
-
-Auto Ex Stealth -> if an ally is alive near you (or no alive allies are near you) and enemy is near OR if projectile is going to hit you
-
-
-# Todo
-Find offsets for if player is countering, to implement ignore countering players
-
-Find offsets for player health, to target lower enemies or to steal orb with snipe at 44 health
-
-Find entity of orb, to steal it
-
-Find more consistent offsets for local player x and y coordinates

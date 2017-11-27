@@ -1,14 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define _WIN32_WINNT 0x0500
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <time.h>
-#include <string.h>
-#include <windows.h>
-#include "MouseManager.hpp"
-
+#include "headers/MouseManager.hpp"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -34,7 +27,6 @@ void mouseMoveAbs(int x, int y)
 
 	SendInput(1, &buffer, sizeof(INPUT));
 }
-
 
 MouseManager::MouseManager()
 {

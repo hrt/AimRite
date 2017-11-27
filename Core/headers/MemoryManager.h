@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <tlhelp32.h>
 #include <string>
+#include <iostream>
 
 class MemoryManager
 {
@@ -16,6 +17,7 @@ public:
 	HANDLE handle;
 	DWORD Battlerite_Base;
 	DWORD MonoDll_Base;
+
   template<class c>
   c Read(DWORD dwAddress)
   {
@@ -25,10 +27,11 @@ public:
   }
 
   template<class c>
-  BOOL Write(DWORD dwAddress, c valueToWrite)
+  BOOL Write(DWORD dwAddress, c ValueToWrite)
   {
-    return WriteProcessMemory(handle, (LPVOID)dwAddress, &valueToWrite, sizeof(c), NULL);
+    return WriteProcessMemory(handle, (LPVOID)dwAddress, &ValueToWrite, sizeof(c), NULL);
   }
+
 	MemoryManager();
 };
 
