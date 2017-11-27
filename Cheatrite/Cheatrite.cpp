@@ -153,7 +153,7 @@ void Cheatrite::run()
 		localPlayer.team = -1;
 
 		// Loop through champions
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			ChampionInformation champion = memory.Read<ChampionInformation>(e5 + OFFSET_CHAMPION_START + i * CHAMPION_SIZE);
 
