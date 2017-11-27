@@ -17,6 +17,7 @@
 [Rr]eleases/
 x64/
 x86/
+binaries/
 build/
 bld/
 [Bb]in/

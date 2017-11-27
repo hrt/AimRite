@@ -1,5 +1,4 @@
-#include "MemoryManager.h"
-#include <iostream>
+#include "headers/MemoryManager.h"
 
 bool getPID(const char* ProcessName, DWORD& PID)
 {
@@ -38,9 +37,8 @@ void grabHandle(DWORD PID, HANDLE& processHandle)
 
 MemoryManager::MemoryManager()
 {
-
 	getPID(BATTLERITE_EXE.c_str(), PID);
-	
+
 	handle = NULL;
 	grabHandle(PID, handle);
 
@@ -95,5 +93,4 @@ MemoryManager::MemoryManager()
 	}
 	std::cout << BATTLERITE_EXE << " = " << Battlerite_Base << std::endl;
 	std::cout << MONO_DLL << " = " << MonoDll_Base << std::endl;
-
 }
