@@ -37,6 +37,9 @@ void Cheatrite::run()
 	bool cameraLocked = true;
 	bool mButtonPressed = false;
 
+	// Manually editing multiplier?
+	float multiplier = 1.0f;
+
 	MemoryManager memory;
 	WindowManager window;
 	MouseManager mouse;
@@ -222,7 +225,7 @@ windowFocused:
 					continue;
 
 				// Ignore entities that are really far away
-				if (distanceToTarget > 1000.f)
+				if (distanceToTarget > (cameraLocked ? 200.f : 254.f))
 					continue;
 
 				if (distanceToTarget < 1.f)
@@ -461,7 +464,7 @@ windowFocused:
 							SendInput(1, &keyEvent, sizeof(INPUT));
 
 							// Move opposite direction of enemy
-							//multiplier = -100.f;
+							multiplier = -100.f;
 						}
 						else if (/*!cooldownQ && */projectileWillHitUs && distanceToEnemy > 30.f)
 						{
@@ -485,7 +488,7 @@ windowFocused:
 							keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 							SendInput(1, &keyEvent, sizeof(INPUT));
 
-							//multiplier = 0.5f;
+							multiplier = 0.5f;
 						}
 						else if (/*!cooldownR && */projectileWillHitUs)
 						{
@@ -628,20 +631,27 @@ windowFocused:
 					float dx = targetEnemy.x + targetEnemy.velocityX * 5 - x;
 					float dy = targetEnemy.y + targetEnemy.velocityY * 5 - y;
 
-					Vector2* vec = window.GetWindowPosition();
+					Vector2 vec = window.GetWindowPosition();
 
 					// Screen is flipped for team 2
 					if (playerTeam == 2)
 					{
-						dx *= -1;
-						dy *= -1;
+						dx = -1;
+						dy = -1;
 					}
 
 					// change this 69 till your cursor hits exactly on champ
-					vec->x = GetSystemMetrics(SM_CXSCREEN) / 2 + dx * offset;
-					vec->y = GetSystemMetrics(SM_CYSCREEN) / 2 - dy * offset;
+					vec.x = GetSystemMetrics(SM_CXSCREEN) / 2 + multiplier * (dx * offset);
+					vec.y = GetSystemMetrics(SM_CYSCREEN) / 2 - multiplier * (dy * offset);
 
-					mouse.executeMovementTo(window, *vec);
+					// Auto heal on right click
+					if (enableScripts && this->champion == "Pearl" && (GetKeyState(VK_RBUTTON) & 0x100) != 0)
+					{
+						vec.x = GetSystemMetrics(SM_CXSCREEN) / 2;
+						vec.y = GetSystemMetrics(SM_CYSCREEN) / 2;
+					}
+
+					mouse.executeMovementTo(window, vec);
 					Sleep(50);
 				}
 			}
