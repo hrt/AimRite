@@ -576,7 +576,7 @@ void Cheatrite::run()
 					}
 				}
 			}
-			else if (this->champion == "Ragion")
+			else if (this->champion == "Raigon")
 			{
 				if (distanceToEnemy > 0.f && differenceInTime > 0.5)
 				{
