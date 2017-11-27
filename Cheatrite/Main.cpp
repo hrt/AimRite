@@ -6,9 +6,8 @@
 using namespace std;
 
 int main() {
-	// Fixed the CodeMaid formatting lol
 	string selectedchamp;
-pickChamp:
+	while (!(selectedchamp == "Ashka" || selectedchamp == "Jade" || selectedchamp == "Pearl" || selectedchamp == "Ezmo" || selectedchamp == "Raigon"))
 	{
 		cout << "What champion would you like to play?" << endl;
 		cout << "Available champions: Ashka, Jade, Pearl, Ezmo, Raigon" << endl;
@@ -16,13 +15,8 @@ pickChamp:
 		cin >> selectedchamp;
 	}
 
-	if (selectedchamp == "Ashka" || selectedchamp == "Jade" || selectedchamp == "Pearl" || selectedchamp == "Ezmo" || selectedchamp == "Raigon") {
-		Cheatrite Cheatrite(selectedchamp);
-		Cheatrite.run();
-	}
-	else {
-		cout << endl << endl << "Wrong champion type." << endl; // formatting ftw
-		goto pickChamp;
-	}
+	Cheatrite Cheatrite(selectedchamp);
+	Cheatrite.run();
+
 	return EXIT_SUCCESS;
 }

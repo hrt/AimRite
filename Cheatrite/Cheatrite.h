@@ -16,7 +16,8 @@ using namespace std;
 // don't worry about this, I'm trying to make everything more easily accessible
 // that is why this is here, but I just stopped at this point
 // gonna work more on it later
-enum Champions {
+enum Champions
+{
 	JADE,
 };
 
