@@ -50,7 +50,7 @@ Pretty simple to run, open Battlerite and then open Aimrite.
 Either build the solution yourself, or go to [releases](https://github.com/ih1115/CheatRite/releases) and download the latest release.  
 
 #### Game Configuration
-Please set your ingame settings to minimum and disable ```accelerate input``` under ```Gameplay``` then restart the game ([Issue])(https://github.com/ih1115/BattleriteAimbot/issues/7)
+Please set your ingame settings to minimum and disable ```accelerate input``` under ```Gameplay``` then restart the game ([Issue](https://github.com/ih1115/BattleriteAimbot/issues/7))
 
 # Issues
 Hack not working? [Issue #2](https://github.com/ih1115/CheatRite/issues/2) and [Issue #7](https://github.com/ih1115/CheatRite/issues/7)
