@@ -8,6 +8,10 @@
 #define radiansToDegrees(angleRadians) (angleRadians * 180.0 / M_PI)
 #define degreesToRadians(angleDegrees) (angleDegrees * M_PI / 180.0)
 
+/* Team numbers */
+#define TEAM_1 1
+#define TEAM_2 2
+
 /* Alpha */
 #define MOVE_RIGHT 16
 #define MOVE_LEFT 2
@@ -46,7 +50,7 @@ struct ChampionInformation
 	DWORD padding0[6];		// 0
 	float x;				// 18
 	float y;				// 1C
-	DWORD padding20[7];		// 20
+	DWORD padding20[6];		// 20
 	int team;				// 38
 	DWORD padding3C[7];		// 3C
 	float currentHP;		// 58
@@ -73,13 +77,17 @@ struct EntityInformation
 // Used to load information from champions
 struct PlayerInformation
 {
+	int team;
 	float x;
 	float y;
+	float currentHP;
+	float maxHP;
+	float maxEnergy;
+	float currentEnergy;
 	float previousX;
 	float previousY;
 	float velocityX;
 	float velocityY;
-	clock_t lastUpdate;
 };
 
 #endif

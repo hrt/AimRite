@@ -120,6 +120,8 @@ void Cheatrite::run()
 			pageUpPressed = false;
 		}
 
+		PlayerInformation localPlayer;
+
 		// Get local players coordinates
 		DWORD c1 = memory.Read<DWORD>(memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 		DWORD c2 = memory.Read<DWORD>(c1 + OFFSET_LOCAL_PLAYER[1]);
@@ -127,14 +129,15 @@ void Cheatrite::run()
 		DWORD c4 = memory.Read<DWORD>(c3 + OFFSET_LOCAL_PLAYER[3]);
 		DWORD c5 = memory.Read<DWORD>(c4 + OFFSET_LOCAL_PLAYER[4]);
 
-		float x = memory.Read<float>(c5 + OFFSET_LOCAL_X);
-		float y = memory.Read<float>(c5 + OFFSET_LOCAL_Y);
+		localPlayer.x = memory.Read<float>(c5 + OFFSET_LOCAL_X);
+		localPlayer.y = memory.Read<float>(c5 + OFFSET_LOCAL_Y);
 
-		// Get entity list
-		DWORD e1 = memory.Read<DWORD>(memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
-		DWORD e2 = memory.Read<DWORD>(e1 + OFFSET_ENTITY_LIST[1]);
-		DWORD e3 = memory.Read<DWORD>(e2 + OFFSET_ENTITY_LIST[2]);
-		DWORD e4 = memory.Read<DWORD>(e3 + OFFSET_ENTITY_LIST[3]);
+		// Get champion list
+		DWORD e1 = memory.Read<DWORD>(memory.MonoDll_Base + OFFSET_CHAMPION_LIST[0]);
+		DWORD e2 = memory.Read<DWORD>(e1 + OFFSET_CHAMPION_LIST[1]);
+		DWORD e3 = memory.Read<DWORD>(e2 + OFFSET_CHAMPION_LIST[2]);
+		DWORD e4 = memory.Read<DWORD>(e3 + OFFSET_CHAMPION_LIST[3]);
+		DWORD e5 = memory.Read<DWORD>(e4 + OFFSET_CHAMPION_LIST[4]);
 
 		// Find closest player for allies and enemies
 		float closest1 = 1000000000.f;
@@ -147,70 +150,35 @@ void Cheatrite::run()
 		bool projectileCollidesFromTeam2 = false;
 
 		// Local players team
-		int playerTeam = -1;
+		localPlayer.team = -1;
 
-		// Loop through entities
-		for (int i = 0; i < 10; i++)
+		// Loop through champions
+		for (int i = 0; i < 3; i++)
 		{
-			EntityInformation entity = memory.Read<EntityInformation>(e4 + OFFSET_ENTITY_START + i * ENTITY_SIZE);
+			ChampionInformation champion = memory.Read<ChampionInformation>(e5 + OFFSET_CHAMPION_START + i * CHAMPION_SIZE);
 
 			// Ignore other teams
-			if (entity.team != 1 && entity.team != 2)
+			if (champion.team != TEAM_1 && champion.team != TEAM_2)
 				continue;
 
 			// Out of map
-			if (entity.x > 100.f || entity.x < -100.f || entity.y > 100.f || entity.y < -100.f)
-				continue;
-
-			if (entity.directionX || entity.directionY)
-			{
-				// Trace ray with fixed range for all projectiles
-				for (int i = 5; i < 200; i++)
-				{
-					float projectedX = entity.x + entity.directionX / 10 * i;
-					float projectedY = entity.y + entity.directionY / 10 * i;
-
-					float diffX = abs(projectedX - x);
-					float diffY = abs(projectedY - y);
-
-					// If within threshold
-					if (diffX < 1.f && diffY < 1.f)
-					{
-						// We are going to / already have collided
-						projectileCollidesFromTeam1 |= entity.team == 1;
-						projectileCollidesFromTeam2 |= entity.team == 2;
-						break;
-					}
-				}
-			}
-
-			// Don't aim at projectiles
-			if (entity.directionX || entity.directionY)
+			if (champion.x > 100.f || champion.x < -100.f || champion.y > 100.f || champion.y < -100.f)
 				continue;
 
 			// Ignore orb and null
-			if (!entity.x || !entity.y)
+			if (!champion.x || !champion.y)
 				continue;
 
 			// Distance to target
-			float dx = x - entity.x;
-			float dy = y - entity.y;
+			float dx = localPlayer.x - champion.x;
+			float dy = localPlayer.y - champion.y;
 			float distanceToTarget = dx * dx + dy * dy;
 
-			playerInformation[i].velocityX = entity.x - playerInformation[i].x;
-			playerInformation[i].velocityY = entity.y - playerInformation[i].y;
+			playerInformation[i].velocityX = champion.x - playerInformation[i].x;
+			playerInformation[i].velocityY = champion.y - playerInformation[i].y;
 
-			// Ignore dead people or afk people (1 seconds)
-			if (abs(playerInformation[i].velocityX) > 0.1f
-				|| abs(playerInformation[i].velocityY) > 0.1f)
-			{
-				// Update timer
-				playerInformation[i].lastUpdate = clock();
-			}
-
-			float differenceInTime = (clock() - playerInformation[i].lastUpdate) / CLOCKS_PER_SEC;
-
-			if (differenceInTime > 1.f)
+			// Ignore dead people
+			if (champion.currentHP <= 0.f)
 				continue;
 
 			// Ignore entities that are really far away
@@ -220,23 +188,28 @@ void Cheatrite::run()
 			if (distanceToTarget < 1.f)
 			{
 				// Local player found
-				playerTeam = entity.team;
+				localPlayer.team = champion.team;
 			}
-			else if (entity.team == 1 && distanceToTarget < closest1)
+			else if (champion.team == TEAM_1 && distanceToTarget < closest1)
 			{
 				closest1 = distanceToTarget;
 				closest1Index = i;
 			}
-			else if (entity.team == 2 && distanceToTarget < closest2)
+			else if (champion.team == TEAM_2 && distanceToTarget < closest2)
 			{
 				closest2 = distanceToTarget;
 				closest2Index = i;
 			}
 
+			playerInformation[i].team = playerInformation[i].team;
 			playerInformation[i].previousX = playerInformation[i].x;
 			playerInformation[i].previousY = playerInformation[i].y;
-			playerInformation[i].x = entity.x;
-			playerInformation[i].y = entity.y;
+			playerInformation[i].x = champion.x;
+			playerInformation[i].y = champion.y;
+			playerInformation[i].currentHP = champion.currentHP;
+			playerInformation[i].maxHP = champion.maxHP;
+			playerInformation[i].currentEnergy = champion.currentEnergy;
+			playerInformation[i].maxEnergy = champion.maxEnergy;
 		}
 
 		// Pick which closest player you want to target (ally or enemy)
@@ -246,7 +219,7 @@ void Cheatrite::run()
 		PlayerInformation targetAlly;
 		bool projectileWillHitUs = false;
 
-		if (playerTeam == 2)
+		if (localPlayer.team == TEAM_2)
 		{
 			projectileWillHitUs = projectileCollidesFromTeam1;
 			if (closest1Index != -1)
@@ -261,7 +234,7 @@ void Cheatrite::run()
 				targetAlly = playerInformation[closest2Index];
 			}
 		}
-		else if (playerTeam == 1)
+		else if (localPlayer.team == TEAM_1)
 		{
 			projectileWillHitUs = projectileCollidesFromTeam2;
 			if (closest1Index != -1)
@@ -348,19 +321,19 @@ void Cheatrite::run()
 					}
 					//else if (distanceToEnemy > 20.f && distanceToEnemy < 100.f && !passivePlay)
 					//{
-					//	// Auto EX SNIPE if not close and in range
+					//  // Auto EX SNIPE if not close and in range
 
-					//	// if in range cast 1
-					//	lastPressTime = clock();
+					//  // if in range cast 1
+					//  lastPressTime = clock();
 
-					//	// Press the "1" key
-					//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-					//	keyEvent.ki.dwFlags = 0; // 0 for key press
-					//	SendInput(1, &keyEvent, sizeof(INPUT));
+					//  // Press the "1" key
+					//  keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+					//  keyEvent.ki.dwFlags = 0; // 0 for key press
+					//  SendInput(1, &keyEvent, sizeof(INPUT));
 
-					//	// Release the "1" key
-					//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-					//	SendInput(1, &keyEvent, sizeof(INPUT));
+					//  // Release the "1" key
+					//  keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					//  SendInput(1, &keyEvent, sizeof(INPUT));
 					//}
 				}
 			}
@@ -405,17 +378,17 @@ void Cheatrite::run()
 					}
 					//if (distanceToEnemy < 30.f)
 					//{
-					//	// if in range cast R
-					//	lastPressTime = clock();
+					//  // if in range cast R
+					//  lastPressTime = clock();
 
-					//	// Press the "R" key
-					//	keyEvent.ki.wVk = 0x52; // virtual-key code for the "R" key
-					//	keyEvent.ki.dwFlags = 0; // 0 for key press
-					//	SendInput(1, &keyEvent, sizeof(INPUT));
+					//  // Press the "R" key
+					//  keyEvent.ki.wVk = 0x52; // virtual-key code for the "R" key
+					//  keyEvent.ki.dwFlags = 0; // 0 for key press
+					//  SendInput(1, &keyEvent, sizeof(INPUT));
 
-					//	// Release the "R" key
-					//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-					//	SendInput(1, &keyEvent, sizeof(INPUT));
+					//  // Release the "R" key
+					//  keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					//  SendInput(1, &keyEvent, sizeof(INPUT));
 					//}
 					if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
 					{
@@ -496,12 +469,12 @@ void Cheatrite::run()
 					}
 					//else if (distanceToEnemy > 100.f)
 					//{
-					//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-					//	keyEvent.ki.dwFlags = 0; // 0 for key press
-					//	SendInput(1, &keyEvent, sizeof(INPUT));
+					//  keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+					//  keyEvent.ki.dwFlags = 0; // 0 for key press
+					//  SendInput(1, &keyEvent, sizeof(INPUT));
 
-					//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-					//	SendInput(1, &keyEvent, sizeof(INPUT));
+					//  keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					//  SendInput(1, &keyEvent, sizeof(INPUT));
 					//}
 				}
 			}
@@ -624,13 +597,13 @@ void Cheatrite::run()
 			if (distanceToEnemy > 1.f)
 			{
 				// Movement prediction
-				float dx = targetEnemy.x + targetEnemy.velocityX * 5 - x;
-				float dy = targetEnemy.y + targetEnemy.velocityY * 5 - y;
+				float dx = targetEnemy.x + targetEnemy.velocityX * 5 - localPlayer.x;
+				float dy = targetEnemy.y + targetEnemy.velocityY * 5 - localPlayer.y;
 
 				Vector2 vec = window.GetWindowPosition();
 
 				// Screen is flipped for team 2
-				if (playerTeam == 2)
+				if (localPlayer.team == TEAM_2)
 				{
 					dx = -1;
 					dy = -1;
