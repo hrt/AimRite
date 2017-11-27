@@ -120,15 +120,6 @@ void Cheatrite::run()
 			pageUpPressed = false;
 		}
 
-		// Get local players buttons
-		DWORD b1 = memory.Read<DWORD>(memory.Battlerite_Base + OFFSET_LOCAL_BUTTONS[0]);
-		DWORD b2 = memory.Read<DWORD>(b1 + OFFSET_LOCAL_BUTTONS[1]);
-		DWORD b3 = memory.Read<DWORD>(b2 + OFFSET_LOCAL_BUTTONS[2]);
-		DWORD b4 = memory.Read<DWORD>(b3 + OFFSET_LOCAL_BUTTONS[3]);
-		DWORD b5 = memory.Read<DWORD>(b4 + OFFSET_LOCAL_BUTTONS[4]);
-
-		//memory.Write<int>(b5 + OFFSET_LOCAL_ALPHA, MOVE_LEFT + MOVE_DOWN);
-
 		// Get local players coordinates
 		DWORD c1 = memory.Read<DWORD>(memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 		DWORD c2 = memory.Read<DWORD>(c1 + OFFSET_LOCAL_PLAYER[1]);

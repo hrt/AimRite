@@ -32,38 +32,45 @@ const static DWORD OFFSET_LOCAL_PLAYER[] = { 0xF9AE70, 0x38, 0x2F8, 0x598, 0x1C 
 const static DWORD OFFSET_LOCAL_X = 0x30;
 const static DWORD OFFSET_LOCAL_Y = 0x38;
 
-const static DWORD OFFSET_COOLDOWNS[] = { 0x001F5994, 0x0, 0x4C, 0x764, 0x368 };
-const static DWORD OFFSET_COOLDOWNS_R = 0x19C;
-const static DWORD OFFSET_COOLDOWNS_Q = 0x104;
-const static DWORD OFFSET_COOLDOWNS_SPACE = 0xB8;
-const static DWORD OFFSET_COOLDOWNS_E = 0x150;
-const static DWORD OFFSET_COOLDOWNS_RIGHT = 0x6C;
-
-const static DWORD OFFSET_LOCAL_BUTTONS[] = { 0x0105365C, 0x590, 0x54, 0xF0, 0x5A8 };
-const static DWORD OFFSET_LOCAL_ALPHA = 0x32C;
-const static DWORD OFFSET_LOCAL_NUMERIC = 0x324;
-const static DWORD OFFSET_LOCAL_MOUSE = 0x348;
-
 const static DWORD OFFSET_ENTITY_LIST[] = { 0x001F55EC, 0x40, 0xB4, 0x98 };
 const static DWORD ENTITY_SIZE = 0x2C;
 const static DWORD OFFSET_ENTITY_START = 0x214;
 
-struct EntityInformation
+const static DWORD OFFSET_CHAMPION_LIST[] = { 0x001F5994, 0x4, 0x40, 0x4B4, 0x110 };
+const static DWORD CHAMPION_SIZE = 0x13C;
+const static DWORD OFFSET_CHAMPION_START = 0x0;
+
+// Used to read from champion list, corresponds to battlerites struct
+struct ChampionInformation
 {
-	DWORD unknown0;
-	DWORD unknown4;
-	DWORD unknown8;
-	DWORD unknownC;
-	DWORD unknown10;
-	DWORD unknown14;
-	int team;
-	DWORD unknown1C;
-	float x;
-	float y;
-	float directionX;
-	float directionY;
+	DWORD padding0[6];		// 0
+	float x;				// 18
+	float y;				// 1C
+	DWORD padding20[7];		// 20
+	int team;				// 38
+	DWORD padding3C[7];		// 3C
+	float currentHP;		// 58
+	DWORD padding5C[11];	// 5C
+	float currentEnergy;	// 88
+	DWORD padding4;			// 8C
+	float maxEnergy;		// 90
+	DWORD padding94[15];	// 94
+	float maxHP;			// D0
 };
 
+// Used to read from entity list, corresponds to battlerites struct
+struct EntityInformation
+{
+	DWORD padding0[6];		// 0
+	int team;				// 18
+	DWORD padding1C;		// 1C
+	float x;				// 20
+	float y;				// 24
+	float directionX;		// 28
+	float directionY;		// 2C
+};
+
+// Used to load information from champions
 struct PlayerInformation
 {
 	float x;
