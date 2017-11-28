@@ -660,7 +660,7 @@ void Cheatrite::run()
 
 				// change this 69 till your cursor hits exactly on champ
 				vec.x = GetSystemMetrics(SM_CXSCREEN) / 2 + multiplier * (dx * offset);
-				vec.y = GetSystemMetrics(SM_CYSCREEN) / 2 - multiplier * (dx * offset);
+				vec.y = GetSystemMetrics(SM_CYSCREEN) / 2 - multiplier * (dy * offset);
 
 				// Auto heal on right click
 				if (enableScripts && this->champion == "Pearl" && (GetKeyState(VK_RBUTTON) & 0x100) != 0)
