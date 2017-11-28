@@ -195,6 +195,8 @@ void Cheatrite::run()
 			{
 				// Local player found
 				localPlayer.team = champion.team;
+				localPlayer.x = champion.x;
+				localPlayer.y = champion.y;
 			}
 			else if (champion.team == TEAM_1 && distanceToTarget < closest1)
 			{
