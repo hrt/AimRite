@@ -369,22 +369,22 @@ void Cheatrite::run()
 						keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 						SendInput(1, &keyEvent, sizeof(INPUT));
 					}
-					//else if (distanceToEnemy > 20.f && distanceToEnemy < 100.f && !passivePlay)
-					//{
-					//  // Auto EX SNIPE if not close and in range
+					else if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
+					{
+					  // Auto EX SNIPE if not close and in range
 
-					//  // if in range cast 1
-					//  lastPressTime = clock();
+					  // if in range cast 1
+					  lastPressTime = clock();
 
-					//  // Press the "1" key
-					//  keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-					//  keyEvent.ki.dwFlags = 0; // 0 for key press
-					//  SendInput(1, &keyEvent, sizeof(INPUT));
+					  // Press the "1" key
+					  keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+					  keyEvent.ki.dwFlags = 0; // 0 for key press
+					  SendInput(1, &keyEvent, sizeof(INPUT));
 
-					//  // Release the "1" key
-					//  keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-					//  SendInput(1, &keyEvent, sizeof(INPUT));
-					//}
+					  // Release the "1" key
+					  keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					  SendInput(1, &keyEvent, sizeof(INPUT));
+					}
 				}
 			}
 			else if (this->champion == "Ashka")
@@ -660,7 +660,7 @@ void Cheatrite::run()
 
 				// change this 69 till your cursor hits exactly on champ
 				vec.x = GetSystemMetrics(SM_CXSCREEN) / 2 + multiplier * (dx * offset);
-				vec.y = GetSystemMetrics(SM_CYSCREEN) / 2 - multiplier * (dy * offset);
+				vec.y = GetSystemMetrics(SM_CYSCREEN) / 2 - multiplier * (dx * offset);
 
 				// Auto heal on right click
 				if (enableScripts && this->champion == "Pearl" && (GetKeyState(VK_RBUTTON) & 0x100) != 0)
