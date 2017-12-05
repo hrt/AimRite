@@ -1,8 +1,6 @@
 # Battlerite Aimbot and Scripts
 This is a very basic external way to add aimbot and scripting to Battlerite.
 
-Discord server for more support: https://discord.gg/qF5Hggk
-
 [![Preview of Cheatrite on Youtube](https://img.youtube.com/vi/RPr5pDSZ7gE/0.jpg)](https://www.youtube.com/watch?v=RPr5pDSZ7gE)
 https://www.youtube.com/watch?v=RPr5pDSZ7gE
 
@@ -68,3 +66,15 @@ Also change your controls in Battlerite from making camera locked and unlocked t
 To become a [contributor](https://github.com/ih1115/CheatRite/graphs/contributors) you will have to ask me to invite you.
 After that, to add a feature say ```Poloma script``` create a new branch ```Poloma``` push your commits and then make a [pull request](https://github.com/ih1115/CheatRite/pulls) to master.
 Please try to keep the code style consistent and do not add any binaries.
+
+# Discord
+We will NOT help you if you are asking these following questions:  
+1. How do I inject this? - [answered here](https://github.com/ih1115/CheatRite/blob/master/README.md#run)  
+2. How do I compile this? - [use common sense](http://bfy.tw/FN2n)  
+3. Why doesn't it work for me? - [explained here](https://github.com/ih1115/CheatRite/issues/4)  
+4. How do I manually update the offsets? - [guide here](https://github.com/ih1115/CheatRite/issues/4#issuecomment-346457840)  
+5. Why doesn't aimbot work? - [did you even bother to read this?](https://github.com/ih1115/CheatRite/issues/4)  
+6. I've restarted 100 times but it still doesn't work. Why? - [try this](https://github.com/ih1115/CheatRite/issues/4) and then try again.
+7. Does it work on the latest patch? - Check if we have updated the source after the date of an update on Battlerite. If we have, it's very likely it has been updated to work on the latest patch. To make sure, check if we've made changes to ```Core/headers/Offsets.hpp```.  
+If you need help with any of those issues, we refuse to help you.  
+Otherwise, you're welcome to join us: https://discord.gg/qF5Hggk
