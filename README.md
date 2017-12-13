@@ -77,4 +77,5 @@ We will NOT help you if you are asking these following questions:
 6. I've restarted 100 times but it still doesn't work. Why? - [try this](https://github.com/ih1115/CheatRite/issues/4) and then try again.
 7. Does it work on the latest patch? - Check if we have updated the source after the date of an update on Battlerite. If we have, it's very likely it has been updated to work on the latest patch. To make sure, check if we've made changes to ```Core/headers/Offsets.hpp```.  
 If you need help with any of those issues, we refuse to help you.  
-Otherwise, you're welcome to join us: https://discord.gg/qF5Hggk
+New discord..
+Otherwise, you're welcome to join us: https://discord.gg/fumXWDW
