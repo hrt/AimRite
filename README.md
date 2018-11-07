@@ -33,4 +33,6 @@ Note : if Battlerite has updated since the last commit then it's quite likely th
 ~~Auto Ex Sniper -> if not close but still in range~~
 
 ~~Auto Ex Stealth -> if an ally is alive near you (or no alive allies are near you) and enemy is near OR if projectile is going to hit you~~
-I recently updated ```Offsets.hpp``` for aimbot only and removed all script code for now..
+
+Out of boredom, I recently updated ```Offsets.hpp``` for aimbot only and removed all script code for now..
+Obviously scripts are what makes this OP and they will come if I'm still bored
