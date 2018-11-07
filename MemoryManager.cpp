@@ -45,7 +45,7 @@ MemoryManager::MemoryManager()
 	grabHandle(PID, handle);
 
 	HANDLE moduleSnapshotHandle_ = INVALID_HANDLE_VALUE;
-	moduleSnapshotHandle_ = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, PID);
+	moduleSnapshotHandle_ = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, PID);
 	if (moduleSnapshotHandle_ == INVALID_HANDLE_VALUE)
 	{
 		std::cout << "Module Snapshot error" << std::endl;

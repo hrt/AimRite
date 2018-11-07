@@ -67,88 +67,76 @@ int main(int argc, char** argv) {
 
 	DWORD battleriteBaseTest = 29 + (DWORD)FindPattern(memory.handle, memory.Battlerite_Base, memory.Battlerite_Size, "\x00\x0B\x00\x00\x00\x0C\x00\x00\x00\x70\xCE\xF3\x00\x70\xCE", "xxxxxxxxxxxxxxx");
 
-	std::cout << "Original battlerite.exe base  : " << memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0] << std::endl;
-	std::cout << "Signature battlerite.exe base : " << battleriteBaseTest << std::endl;
+	std::cout << std::hex << "Original battlerite.exe base  : " << memory.Battlerite_Base << std::endl;
+	std::cout << std::hex << "Signature battlerite.exe base : " << battleriteBaseTest << std::endl;
 
-	std::cout << "Original mono.dll base  : " << (DWORD) memory.MonoDll_Base + OFFSET_ENTITY_LIST[0] << std::endl;
+	std::cout << std::hex << "Original mono.dll base  : " << (DWORD) memory.MonoDll_Base << std::endl;
 	DWORD monoDllBaseTest = 16 + (DWORD)FindPattern(memory.handle, memory.MonoDll_Base, memory.MonoDLL_Size, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xD0\x07\x00\x02\xD8\xFE", "xxxxxxxxxxxxxxxxxx");
-	std::cout << "Signature mono.dll base : " << monoDllBaseTest << std::endl;
+	std::cout << std::hex << "Signature mono.dll base : " << monoDllBaseTest << std::endl;
 
 	DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 	DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
-	DWORD p3 = Read<DWORD>(memory.handle, p2 + OFFSET_LOCAL_PLAYER[2]);
-	DWORD p4 = Read<DWORD>(memory.handle, p3 + OFFSET_LOCAL_PLAYER[3]);
-	DWORD p5 = Read<DWORD>(memory.handle, p4 + OFFSET_LOCAL_PLAYER[4]);
 
-	float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
+	float x = Read<float>(memory.handle, p2 + OFFSET_LOCAL_X);
 	std::cout << "Player x coordinate : " << x << std::endl;
 
 
-	DWORD e1 = Read<DWORD>(memory.handle, monoDllBaseTest);
-	//DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
-	DWORD e2 = Read<DWORD>(memory.handle, e1 + OFFSET_ENTITY_LIST[1]);
-	DWORD e3 = Read<DWORD>(memory.handle, e2 + OFFSET_ENTITY_LIST[2]);
-	DWORD e4 = Read<DWORD>(memory.handle, e3 + OFFSET_ENTITY_LIST[3]);
+	DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_CHAMPION_LIST[0]);
+	DWORD e2 = Read<DWORD>(memory.handle, e1 + OFFSET_CHAMPION_LIST[1]);
+	DWORD e3 = Read<DWORD>(memory.handle, e2 + OFFSET_CHAMPION_LIST[2]);
+	DWORD e4 = Read<DWORD>(memory.handle, e3 + OFFSET_CHAMPION_LIST[3]);
+	DWORD e5 = Read<DWORD>(memory.handle, e4 + OFFSET_CHAMPION_LIST[4]);
+	DWORD e6 = Read<DWORD>(memory.handle, e5 + OFFSET_CHAMPION_LIST[5]);
+	DWORD e7 = Read<DWORD>(memory.handle, e6 + OFFSET_CHAMPION_LIST[6]);
 
-	std::cout << "Entity x coordinate : " << Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + 1 * PLAYER_SIZE) << std::endl;
+	x = Read<float>(memory.handle, e7 + OFFSET_CHAMPION_X);
+	std::cout << "Entity x coordinate : " << x << std::endl;
 
-	DWORD t1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + 0x01021708);
-	DWORD t2 = Read<DWORD>(memory.handle, t1 + 0x50);
-	DWORD t3 = Read<DWORD>(memory.handle, t2 + 0xC);
-	DWORD t4 = Read<DWORD>(memory.handle, t3 + 0x24);
-	DWORD t5 = Read<DWORD>(memory.handle, t4 + 0x60);
-	DWORD t6 = Read<DWORD>(memory.handle, t5 + 0x5B8);
-	DWORD t7 = Read<DWORD>(memory.handle, t6 + 0xB4);
-	DWORD t8 = Read<DWORD>(memory.handle, t7 + 0x98);
-	float someX = Read<float>(memory.handle, t8 + 0x260);
-
-	std::cout << "Test x coordinate : " << someX << std::endl;
 
 	while (window.WindowFocused() || window.WindowExists())
 	{
-		// Get local players buttons
-		DWORD b1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_BUTTONS[0]);
-		DWORD b2 = Read<DWORD>(memory.handle, b1 + OFFSET_LOCAL_BUTTONS[1]);
-		DWORD b3 = Read<DWORD>(memory.handle, b2 + OFFSET_LOCAL_BUTTONS[2]);
-		DWORD b4 = Read<DWORD>(memory.handle, b3 + OFFSET_LOCAL_BUTTONS[3]);
-		DWORD b5 = Read<DWORD>(memory.handle, b4 + OFFSET_LOCAL_BUTTONS[4]);
+		//// Get local players buttons
+		//DWORD b1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_BUTTONS[0]);
+		//DWORD b2 = Read<DWORD>(memory.handle, b1 + OFFSET_LOCAL_BUTTONS[1]);
+		//DWORD b3 = Read<DWORD>(memory.handle, b2 + OFFSET_LOCAL_BUTTONS[2]);
+		//DWORD b4 = Read<DWORD>(memory.handle, b3 + OFFSET_LOCAL_BUTTONS[3]);
+		//DWORD b5 = Read<DWORD>(memory.handle, b4 + OFFSET_LOCAL_BUTTONS[4]);
 
-		//Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, MOVE_LEFT + MOVE_DOWN);
+		////Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, MOVE_LEFT + MOVE_DOWN);
 
-		// Get local players cooldowns
-		DWORD c1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_COOLDOWNS[0]);
-		DWORD c2 = Read<DWORD>(memory.handle, c1 + OFFSET_COOLDOWNS[1]);
-		DWORD c3 = Read<DWORD>(memory.handle, c2 + OFFSET_COOLDOWNS[2]);
-		DWORD c4 = Read<DWORD>(memory.handle, c3 + OFFSET_COOLDOWNS[3]);
-		DWORD c5 = Read<DWORD>(memory.handle, c4 + OFFSET_COOLDOWNS[4]);
+		//// Get local players cooldowns
+		//DWORD c1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_COOLDOWNS[0]);
+		//DWORD c2 = Read<DWORD>(memory.handle, c1 + OFFSET_COOLDOWNS[1]);
+		//DWORD c3 = Read<DWORD>(memory.handle, c2 + OFFSET_COOLDOWNS[2]);
+		//DWORD c4 = Read<DWORD>(memory.handle, c3 + OFFSET_COOLDOWNS[3]);
+		//DWORD c5 = Read<DWORD>(memory.handle, c4 + OFFSET_COOLDOWNS[4]);
 
-		float cooldownQ = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_Q);
-		float cooldownR = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_R);
-		float cooldownE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_E);
-		float cooldownRIGHT = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_RIGHT);
-		float cooldownSPACE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_SPACE);
+		//float cooldownQ = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_Q);
+		//float cooldownR = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_R);
+		//float cooldownE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_E);
+		//float cooldownRIGHT = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_RIGHT);
+		//float cooldownSPACE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_SPACE);
 
-		//std::cout << cooldownQ << std::endl;
-		//std::cout << cooldownR << std::endl;
-		//std::cout << cooldownE << std::endl;
-		//std::cout << cooldownRIGHT << std::endl;
-		//std::cout << cooldownSPACE << std::endl;
+		////std::cout << cooldownQ << std::endl;
+		////std::cout << cooldownR << std::endl;
+		////std::cout << cooldownE << std::endl;
+		////std::cout << cooldownRIGHT << std::endl;
+		////std::cout << cooldownSPACE << std::endl;
 
 		// Get local players coordinates
 		DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 		DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
-		DWORD p3 = Read<DWORD>(memory.handle, p2 + OFFSET_LOCAL_PLAYER[2]);
-		DWORD p4 = Read<DWORD>(memory.handle, p3 + OFFSET_LOCAL_PLAYER[3]);
-		DWORD p5 = Read<DWORD>(memory.handle, p4 + OFFSET_LOCAL_PLAYER[4]);
 
-		float x = Read<float>(memory.handle, p5 + OFFSET_LOCAL_X);
-		float y = Read<float>(memory.handle, p5 + OFFSET_LOCAL_Y);
-		// Get entity list
-		DWORD e1 = Read<DWORD>(memory.handle, monoDllBaseTest);
-		//DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_ENTITY_LIST[0]);
-		DWORD e2 = Read<DWORD>(memory.handle, e1 + OFFSET_ENTITY_LIST[1]);
-		DWORD e3 = Read<DWORD>(memory.handle, e2 + OFFSET_ENTITY_LIST[2]);
-		DWORD e4 = Read<DWORD>(memory.handle, e3 + OFFSET_ENTITY_LIST[3]);
+		float x = Read<float>(memory.handle, p2 + OFFSET_LOCAL_X);
+		float y = Read<float>(memory.handle, p2 + OFFSET_LOCAL_Y);
+		// Get champion list
+		DWORD e1 = Read<DWORD>(memory.handle, memory.MonoDll_Base + OFFSET_CHAMPION_LIST[0]);
+		DWORD e2 = Read<DWORD>(memory.handle, e1 + OFFSET_CHAMPION_LIST[1]);
+		DWORD e3 = Read<DWORD>(memory.handle, e2 + OFFSET_CHAMPION_LIST[2]);
+		DWORD e4 = Read<DWORD>(memory.handle, e3 + OFFSET_CHAMPION_LIST[3]);
+		DWORD e5 = Read<DWORD>(memory.handle, e4 + OFFSET_CHAMPION_LIST[4]);
+		DWORD e6 = Read<DWORD>(memory.handle, e5 + OFFSET_CHAMPION_LIST[5]);
+		DWORD e7 = Read<DWORD>(memory.handle, e6 + OFFSET_CHAMPION_LIST[6]);
 
 		// Find closest player for allies and enemies
 		float closest1 = 1000000000.f;
@@ -165,14 +153,9 @@ int main(int argc, char** argv) {
 		// Loop through entities
 		for (int i = 0; i < 10; i++)
 		{
-			float targetX = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
-			int targetTeam = Read<int>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_TEAM + i * PLAYER_SIZE);
-			float targetY = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_Y + i * PLAYER_SIZE);
-
-			// 1 is right -1 is left
-			float targetDirectionX = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_X + i * PLAYER_SIZE);
-			// 1 is up -1 is down
-			float targetDirectionY = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_Y + i * PLAYER_SIZE);
+			float targetX = Read<float>(memory.handle, e7 + OFFSET_CHAMPION_X + i * PLAYER_SIZE);
+			float targetY = Read<float>(memory.handle, e7 + OFFSET_CHAMPION_Y + i * PLAYER_SIZE);
+			int targetTeam = Read<int>(memory.handle, e7 + OFFSET_CHAMPION_TEAM + i * PLAYER_SIZE);
 
 			// Ignore other teams
 			if (targetTeam != 1 && targetTeam != 2)
@@ -180,32 +163,6 @@ int main(int argc, char** argv) {
 
 			// Out of map
 			if (targetX > 100.f || targetX < -100.f || targetY > 100.f || targetY < -100.f)
-				continue;
-
-			if (targetDirectionX || targetDirectionY)
-			{
-				// Trace ray with fixed range for all projectiles
-				for (int i = 5; i < 200; i++)
-				{
-					float projectedX = targetX + targetDirectionX/10 * i;
-					float projectedY = targetY + targetDirectionY/10 * i;
-
-					float diffX = abs(projectedX - x);
-					float diffY = abs(projectedY - y);
-
-					// If within threshold
-					if (diffX < 1.f && diffY < 1.f)
-					{
-						// We are going to / already have collided
-						projectileCollidesFromTeam1 |= targetTeam == 1;
-						projectileCollidesFromTeam2 |= targetTeam == 2;
-						break;
-					}
-				}
-			}
-
-			// Don't aim at projectiles
-			if (targetDirectionX || targetDirectionY)
 				continue;
 
 			// Ignore orb and null
@@ -324,8 +281,8 @@ int main(int argc, char** argv) {
 			}
 
 			// change this 69 till your cursor hits exactly on champ
-			vec->x = 1920 / 2 + dx * 69;
-			vec->y = 1080 / 2 - dy * 69;
+			vec->x = 1680 / 2 + dx * 69;
+			vec->y = 1050 / 2 - dy * 69;
 
 
 			mouse.executeMovementTo(window, *vec);
