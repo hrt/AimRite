@@ -50,7 +50,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -146,12 +146,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="MouseManager.cpp" />
+    <ClCompile Include="Records.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="MouseManager.hpp" />
     <ClInclude Include="Offsets.hpp" />
+    <ClInclude Include="Records.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="WindowManager.hpp" />
   </ItemGroup>
